@@ -27,7 +27,7 @@ body {
 .badge.warn { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
 .badge.muted { background: #f3f4f6; color: #6b7280; }
 
-.details { display: grid; grid-template-columns: 1fr 280px; gap: 16px; }
+.details { display: grid; grid-template-columns: var(--details-left, 360px) 6px 1fr; gap: 16px; align-items: stretch; }
 .details .section { margin-bottom: 14px; }
 .details h3 { margin: 0 0 6px; font-size: 16px; }
 .keywords { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -36,6 +36,23 @@ body {
 .empty { color: #9ca3af; font-style: italic; padding: 18px; text-align: center; }
 .media { margin-top: 10px; }
 .media img, .media video { max-width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; }
+
+/* Resizer between list and artwork in details panel */
+.details-resizer {
+  width: 6px;
+  cursor: col-resize;
+  background: repeating-linear-gradient(
+    90deg,
+    #e5e7eb 0px,
+    #e5e7eb 2px,
+    #ffffff 2px,
+    #ffffff 4px
+  );
+  border-radius: 4px;
+}
+
+.details-left { overflow: auto; }
+.details-right { overflow: auto; }
 
 @media (max-width: 1200px) {
   .layout { grid-template-columns: 200px 1fr; }

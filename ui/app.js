@@ -183,6 +183,7 @@ window.TaxonomyApp = (function() {
 
     // Left: artist list (and groups)
     const left = document.createElement('div');
+    left.className = 'details-left';
     const artistList = document.createElement('div');
     artistList.className = 'list';
 
@@ -228,6 +229,7 @@ window.TaxonomyApp = (function() {
 
     // Right: details panel (render selected artist or group)
     const right = document.createElement('div');
+    right.className = 'details-right';
     const content = document.createElement('div');
     content.className = 'section';
 
@@ -264,17 +266,60 @@ window.TaxonomyApp = (function() {
         .map(renderArtist)
         .join('');
     } else {
-      const a = (method.artists || []).find(x => x.id === state.selectedArtistId) || (method.artists || [])[0];
-      if (a) {
-        content.innerHTML = renderArtist(a);
+      // If multiple entries per technique are present, render them stacked
+      if (Array.isArray(method.entries) && method.entries.length > 0) {
+        content.innerHTML = method.entries.map(renderArtist).join('');
       } else {
-        content.innerHTML = '<div class="empty">No artist examples.</div>';
+        const a = (method.artists || []).find(x => x.id === state.selectedArtistId) || (method.artists || [])[0];
+        if (a) {
+          content.innerHTML = renderArtist(a);
+        } else {
+          content.innerHTML = '<div class="empty">No artist examples.</div>';
+        }
       }
     }
 
     right.appendChild(content);
 
+    // Resizer between left and right
+    const resizer = document.createElement('div');
+    resizer.className = 'details-resizer';
+
+    // Apply persisted width from localStorage (per method id)
+    const key = `detailsLeftWidth:${method.id}`;
+    const persisted = localStorage.getItem(key);
+    if (persisted) {
+      grid.style.setProperty('--details-left', `${parseInt(persisted, 10)}px`);
+    }
+
+    let startX = 0;
+    let startWidth = 0;
+    const minWidth = 220;
+    const maxWidth = 720;
+
+    const onMouseMove = (e) => {
+      const dx = e.clientX - startX;
+      const newW = Math.min(maxWidth, Math.max(minWidth, startWidth + dx));
+      grid.style.setProperty('--details-left', `${newW}px`);
+    };
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      const val = getComputedStyle(grid).getPropertyValue('--details-left').trim();
+      const num = parseInt(val, 10);
+      if (!Number.isNaN(num)) localStorage.setItem(key, String(num));
+    };
+    resizer.addEventListener('mousedown', (e) => {
+      startX = e.clientX;
+      const val = getComputedStyle(grid).getPropertyValue('--details-left').trim();
+      startWidth = parseInt(val || '360', 10) || 360;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+      e.preventDefault();
+    });
+
     grid.appendChild(left);
+    grid.appendChild(resizer);
     grid.appendChild(right);
     container.appendChild(grid);
   }
