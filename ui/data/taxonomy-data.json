@@ -1,0 +1,288 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "lastUpdated": "2025-09-15T00:00:00Z",
+    "description": "Drawing taxonomy data for categories, subcategories, and methods"
+  },
+  "categories": [
+    {
+      "id": "mark",
+      "name": "MARK",
+      "order": 1,
+      "subcategories": [
+        {
+          "id": "mark-features",
+          "name": "Mark Features",
+          "methodCount": 9,
+          "methods": [
+            {
+              "id": "line-weight",
+              "name": "Line Weight & Pressure",
+              "description": "Varied pressure, thick to thin lines",
+              "status": "active",
+              "artistCount": 9,
+              "artists": [
+                {
+                  "id": "bazicaluva",
+                  "name": "Bazicaluva",
+                  "title": "Foreground Emphasis",
+                  "description": "Progressively heavier line weights for foreground elements create spatial depth and atmospheric perspective.",
+                  "keywords": ["spatial hierarchy", "foreground emphasis", "progressive line weight", "atmospheric perspective", "depth creation", "shadow indication"],
+                  "references": [
+                    {"type": "documentation", "filename": "bazicaluva-foreground-emphasis.md", "path": "prompts/marcel/reference/mark-features/line-weight/bazicaluva-foreground-emphasis.md"},
+                    {"type": "gif", "filename": "bazicaluva-landscape-foreground-emphasis.gif", "path": "prompts/marcel/reference/mark-features/line-weight/bazicaluva-landscape-foreground-emphasis.gif"}
+                  ]
+                },
+                {
+                  "id": "daumier",
+                  "name": "Daumier",
+                  "title": "Visual Grouping & Unit Boundaries",
+                  "description": "Heavier contour around grouped objects; weight shifts on shadow side ground forms as a single mass.",
+                  "keywords": ["visual grouping", "unit boundaries", "mass definition"],
+                  "references": [
+                    {"type": "documentation", "filename": "daumier-visual-grouping.md", "path": "prompts/marcel/reference/mark-features/line-weight/daumier-visual-grouping.md"},
+                    {"type": "gif", "filename": "daumier-reparations-visual-grouping.gif", "path": "prompts/marcel/reference/mark-features/line-weight/daumier-reparations-visual-grouping.gif"}
+                  ]
+                },
+                {
+                  "id": "durer",
+                  "name": "Dürer",
+                  "title": "Edge Definition",
+                  "description": "Heaviest silhouette, medium where forms meet, lightest for interior modeling; clarifies figure-ground.",
+                  "keywords": ["edge definition", "silhouette emphasis", "figure-ground separation", "interior modeling", "shadow-side weighting", "spatial clarity", "chiaroscuro effect"],
+                  "references": [
+                    {"type": "documentation", "filename": "durer-edge-definition.md", "path": "prompts/marcel/reference/mark-features/line-weight/durer-edge-definition.md"},
+                    {"type": "gif", "filename": "durer-adam-eve-edge-definition.gif", "path": "prompts/marcel/reference/mark-features/line-weight/durer-adam-eve-edge-definition.gif"}
+                  ]
+                },
+                {
+                  "id": "haynes",
+                  "name": "Joseph Haynes",
+                  "title": "Edge Definition (Death on a Pale Horse)",
+                  "description": "Varied pressure to define edges with precision; heavier for dominant contours, lighter for secondary edges.",
+                  "keywords": ["edge definition", "line weight variation", "pressure control", "contour emphasis", "detail hierarchy"],
+                  "references": [
+                    {"type": "gif", "filename": "haynes-death-pale-horse-edge-definition.gif", "path": "prompts/marcel/reference/mark-features/line-weight/haynes-death-pale-horse-edge-definition.gif"}
+                  ]
+                },
+                {
+                  "id": "hokusai",
+                  "name": "Hokusai",
+                  "title": "Expressive Line Variation",
+                  "description": "Heavier, faster strokes for structure and emphasis; lighter, slower marks for delicate detail and tenderness.",
+                  "keywords": ["line modulation", "expressive weight", "emotional emphasis", "character definition", "rhythmic variation", "gestural quality", "mark velocity", "speed contrast"],
+                  "references": [
+                    {"type": "documentation", "filename": "hokusai-woman-baby-line-variation.md", "path": "prompts/marcel/reference/mark-features/line-weight/hokusai-woman-baby-line-variation.md"},
+                    {"type": "gif", "filename": "hokusai-woman-baby-line-variation.gif", "path": "prompts/marcel/reference/mark-features/line-weight/hokusai-woman-baby-line-variation.gif"}
+                  ]
+                },
+                {
+                  "id": "hollar",
+                  "name": "Hollar",
+                  "title": "Material Definition",
+                  "description": "Flowing parallel lines for smooth fabric, radiating curves for fur, precise lines for structured surfaces.",
+                  "keywords": ["material definition", "line direction", "line rhythm", "texture indication", "surface character", "directional hatching", "radiating lines", "parallel lines"],
+                  "references": [
+                    {"type": "documentation", "filename": "hollar-material-definition.md", "path": "prompts/marcel/reference/mark-features/line-weight/hollar-material-definition.md"},
+                    {"type": "gif", "filename": "hollar-muff-material-definition.gif", "path": "prompts/marcel/reference/mark-features/line-weight/hollar-muff-material-definition.gif"}
+                  ]
+                },
+                {
+                  "id": "michelangelo",
+                  "name": "Michelangelo",
+                  "title": "Hierarchical Detail",
+                  "description": "Primary muscles get full weight; secondary anatomy medium; background minimal; darker contours align with shadow.",
+                  "keywords": ["hierarchical detail", "anatomical emphasis", "shadow alignment"],
+                  "references": [
+                    {"type": "documentation", "filename": "michelangelo-creation-hierarchical-detail.md", "path": "prompts/marcel/reference/mark-features/line-weight/michelangelo-creation-hierarchical-detail.md"},
+                    {"type": "gif", "filename": "michelangelo-creation-hierarchical-detail.gif", "path": "prompts/marcel/reference/mark-features/line-weight/michelangelo-creation-hierarchical-detail.gif"}
+                  ]
+                },
+                {
+                  "id": "ingres",
+                  "name": "Ingres",
+                  "title": "Sculptural Line Weight",
+                  "description": "Contour \"breathes\": thicker in shadow areas, thinner on light-catching edges; 3D illusion via pressure control.",
+                  "keywords": ["sculptural weight", "breathing line", "3D illusion", "light relationship"],
+                  "references": [
+                    {"type": "documentation", "filename": "ingres-madame-lethiere.md", "path": "prompts/marcel/reference/mark-features/line-weight/ingres-madame-lethiere.md"},
+                    {"type": "gif", "filename": "ingres-madame-lethiere.gif", "path": "prompts/marcel/reference/mark-features/line-weight/ingres-madame-lethiere.gif"}
+                  ]
+                },
+                {
+                  "id": "ruisdael",
+                  "name": "Ruisdael",
+                  "title": "Close Study",
+                  "description": "Meticulous line work captures intricate detail; controlled lines build complex forms through accumulation.",
+                  "keywords": ["close study", "meticulous detail", "natural forms", "accumulated detail"],
+                  "references": [
+                    {"type": "documentation", "filename": "ruisdael-dune-close-study.md", "path": "prompts/marcel/reference/mark-features/line-weight/ruisdael-dune-close-study.md"},
+                    {"type": "gif", "filename": "ruisdael-dune-close-study.gif", "path": "prompts/marcel/reference/mark-features/line-weight/ruisdael-dune-close-study.gif"}
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "line-quality",
+              "name": "Line Quality",
+              "description": "Schiele psychological line",
+              "status": "active",
+              "artistCount": 1,
+              "artists": [
+                {
+                  "id": "schiele",
+                  "name": "Egon Schiele",
+                  "title": "Psychological Line",
+                  "description": "Expressive contour communicates psychological tension and character through line quality.",
+                  "keywords": ["psychological line", "expressive contour"],
+                  "references": [
+                    {"type": "documentation", "filename": "schiele-herbert-rainer-psychological-line.md", "path": "prompts/marcel/reference/mark-features/line-quality/schiele-herbert-rainer-psychological-line.md"},
+                    {"type": "gif", "filename": "schiele-herbert-rainer-psychological-line.gif", "path": "prompts/marcel/reference/mark-features/line-quality/schiele-herbert-rainer-psychological-line.gif"}
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "speed-rhythm",
+              "name": "Speed & Rhythm",
+              "description": "Needs development",
+              "status": "development",
+              "artistCount": 0,
+              "artists": []
+            }
+          ]
+        },
+        {
+          "id": "mark-functions",
+          "name": "Mark Functions",
+          "methodCount": 8,
+          "methods": [
+            {
+              "id": "connective",
+              "name": "Connective",
+              "description": "Cassatt, Gauguin, Moronobu, Rubens",
+              "status": "active",
+              "artistCount": 4,
+              "artists": [
+                {"id": "cassatt-connective", "name": "Mary Cassatt", "title": "Intimacy Through Circular Movement", "description": "Flowing lines bind figures visually via circular movement.", "keywords": ["circular movement", "intimacy", "visual binding", "flowing lines"], "references": [{"type": "documentation", "filename": "cassatt-loge-intimacy.md", "path": "prompts/marcel/reference/mark-functions/connective/cassatt-loge-intimacy.md"}, {"type": "gif", "filename": "cassatt-loge-intimacy.gif", "path": "prompts/marcel/reference/mark-functions/connective/cassatt-loge-intimacy.gif"}]},
+                {"id": "gauguin-connective", "name": "Paul Gauguin", "title": "Dynamic Eye Movement", "description": "Bold connecting strokes guide the eye through the composition.", "keywords": ["dynamic movement", "eye guidance", "bold strokes", "visual connection"], "references": [{"type": "documentation", "filename": "gauguin-tahitian-hair-connection.md", "path": "prompts/marcel/reference/mark-functions/connective/gauguin-tahitian-hair-connection.md"}, {"type": "gif", "filename": "gauguin-tahitian-hair-connection.gif", "path": "prompts/marcel/reference/mark-functions/connective/gauguin-tahitian-hair-connection.gif"}]},
+                {"id": "moronobu-connective", "name": "Moronobu", "title": "Unity Through Doubling", "description": "Doubling techniques unify visual connections across elements.", "keywords": ["unity", "doubling technique", "visual connection", "compositional harmony"], "references": [{"type": "documentation", "filename": "moronobu-kimono-doubling.md", "path": "prompts/marcel/reference/mark-functions/connective/moronobu-kimono-doubling.md"}, {"type": "gif", "filename": "moronobu-kimono-doubling.gif", "path": "prompts/marcel/reference/mark-functions/connective/moronobu-kimono-doubling.gif"}]},
+                {"id": "rubens-connective", "name": "Peter Paul Rubens", "title": "Unified Action", "description": "Connective marks bind multiple figures into one movement.", "keywords": ["unified action", "compositional movement", "figure binding", "dynamic unity"], "references": [{"type": "documentation", "filename": "rubens-ecce-homo-unified-action.md", "path": "prompts/marcel/reference/mark-functions/connective/rubens-ecce-homo-unified-action.md"}, {"type": "gif", "filename": "rubens-ecce-homo-unified-action.gif", "path": "prompts/marcel/reference/mark-functions/connective/rubens-ecce-homo-unified-action.gif"}]}
+              ]
+            },
+            {
+              "id": "atmospheric",
+              "name": "Atmospheric",
+              "description": "Degas atmospheric energy",
+              "status": "active",
+              "artistCount": 1,
+              "artists": [
+                {"id": "degas-atmospheric", "name": "Edgar Degas", "title": "Atmospheric Energy", "description": "Directional hatching creates radiating forces and movement.", "keywords": ["atmospheric energy", "directional hatching", "radiating forces", "movement enhancement"], "references": [{"type": "documentation", "filename": "degas-dancer-atmospheric-energy.md", "path": "prompts/marcel/reference/mark-functions/atmospheric/degas-dancer-atmospheric-energy.md"}, {"type": "gif", "filename": "degas-dancer-atmospheric-energy.gif", "path": "prompts/marcel/reference/mark-functions/atmospheric/degas-dancer-atmospheric-energy.gif"}]}
+              ]
+            },
+            {
+              "id": "structural",
+              "name": "Structural",
+              "description": "Van Gogh structural building",
+              "status": "active",
+              "artistCount": 1,
+              "artists": [
+                {"id": "van-gogh-structural", "name": "Vincent van Gogh", "title": "Structural Building", "description": "Hatching organizes tone into contours and mass to build structure.", "keywords": ["structural building", "hatching organization", "tonal variations", "physical trajectories"], "references": [{"type": "documentation", "filename": "van-gogh-weeping-tree-structure.md", "path": "prompts/marcel/reference/mark-functions/structural/van-gogh-weeping-tree-structure.md"}, {"type": "gif", "filename": "van-gogh-weeping-tree-structure.gif", "path": "prompts/marcel/reference/mark-functions/structural/van-gogh-weeping-tree-structure.gif"}]}
+              ]
+            },
+            {
+              "id": "contour",
+              "name": "Contour",
+              "description": "Rembrandt surface contour",
+              "status": "active",
+              "artistCount": 1,
+              "artists": [
+                {"id": "rembrandt-contour", "name": "Rembrandt", "title": "Surface Contour", "description": "Hatching follows surface contours rather than structural building.", "keywords": ["surface contour", "form following", "edge definition", "hatching direction"], "references": [{"type": "documentation", "filename": "rembrandt-clement-de-jonghe-form.md", "path": "prompts/marcel/reference/mark-functions/contour/rembrandt-clement-de-jonghe-form.md"}, {"type": "gif", "filename": "rembrandt-clement-de-jonghe-form.gif", "path": "prompts/marcel/reference/mark-functions/contour/rembrandt-clement-de-jonghe-form.gif"}]}
+              ]
+            },
+            {
+              "id": "rhythmic",
+              "name": "Rhythmic",
+              "description": "Manet rhythmic shaping",
+              "status": "active",
+              "artistCount": 1,
+              "artists": [
+                {"id": "manet-rhythmic", "name": "Édouard Manet", "title": "Rhythmic Shaping", "description": "Repeating parallel marks follow contours to build volume and rhythm.", "keywords": ["rhythmic shaping", "parallel marks", "contour following", "volume building"], "references": [{"type": "documentation", "filename": "manet-plainte-moresque-rhythm.md", "path": "prompts/marcel/reference/mark-functions/rhythmic/manet-plainte-moresque-rhythm.md"}, {"type": "gif", "filename": "manet-plainte-moresque-rhythm.gif", "path": "prompts/marcel/reference/mark-functions/rhythmic/manet-plainte-moresque-rhythm.gif"}]}
+              ]
+            },
+            {
+              "id": "gestural",
+              "name": "Gestural",
+              "description": "Needs development",
+              "status": "development",
+              "artistCount": 0,
+              "artists": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tone",
+      "name": "TONE",
+      "order": 2,
+      "subcategories": [
+        { 
+          "id": "tone-features", 
+          "name": "Tone Features", 
+          "methodCount": 5, 
+          "methods": [
+            {"id": "hatching-techniques", "name": "Hatching Techniques", "description": "Thayer intense darks hatching", "status": "active", "artistCount": 1, "artists": [
+              {"id": "thayer-hatching", "name": "Abbott Handerson Thayer", "title": "Intense Darks Hatching Within Blending", "description": "Cross-hatching pushes into the darkest darks within blended passages to achieve maximum range.", "keywords": ["intense darks", "hatching", "cross-hatching", "maximum tonal range", "blending integration"], "references": [{"type": "documentation", "filename": "thayer-head-artist-contrast.md", "path": "prompts/marcel/reference/mark-features/tonal-technique/thayer-head-artist-contrast.md"}, {"type": "gif", "filename": "thayer-head-artist-contrast.gif", "path": "prompts/marcel/reference/mark-features/tonal-technique/thayer-head-artist-contrast.gif"}]}
+            ]},
+            {"id": "blending-techniques", "name": "Blending Techniques", "description": "Stumping, finger blending, tortillon work", "status": "active", "artistCount": 1, "artists": [
+              {"id": "seurat-stumping", "name": "Georges Seurat", "title": "Stumping / Blending", "description": "Tonal blending via stumping and tortillon for smooth transitions.", "keywords": ["stumping", "blending", "tortillon", "smooth transitions"], "references": [{"type": "documentation", "filename": "seurat-stumping.md", "path": "prompts/marcel/reference/tone-features/blending-techniques/seurat-stumping.md"}, {"type": "gif", "filename": "seurat-stumping.gif", "path": "prompts/marcel/reference/tone-features/blending-techniques/seurat-stumping.gif"}]}
+            ]},
+            {"id": "stippling-techniques", "name": "Stippling Techniques", "description": "Dot density variations, stipple textures", "status": "active", "artistCount": 1, "artists": [
+              {"id": "watson-garrick-stippling", "name": "James Watson (after Garrick)", "title": "Stippling Techniques", "description": "Dot density variations build texture and tone.", "keywords": ["stippling", "dot density", "texture"], "references": [{"type": "documentation", "filename": "watson-garrick-stippling.md", "path": "prompts/marcel/reference/tone-features/stippling-techniques/watson-garrick-stippling.md"}, {"type": "gif", "filename": "watson-garrick-stippling.gif", "path": "prompts/marcel/reference/tone-features/stippling-techniques/watson-garrick-stippling.gif"}]}
+            ]},
+            {"id": "wash-techniques", "name": "Wash Techniques", "description": "Ink washes, watercolor techniques", "status": "active", "artistCount": 1, "artists": [
+              {"id": "hugo-octopus-wash", "name": "Victor Hugo", "title": "Wash Techniques", "description": "Ink wash handling for tonal modeling and atmosphere.", "keywords": ["wash", "ink", "atmosphere"], "references": [{"type": "documentation", "filename": "hugo-octopus-wash.md", "path": "prompts/marcel/reference/tone-features/wash-techniques/hugo-octopus-wash.md"}, {"type": "gif", "filename": "hugo-octopus-wash.gif", "path": "prompts/marcel/reference/tone-features/wash-techniques/hugo-octopus-wash.gif"}]}
+            ]},
+            {"id": "value-gradation", "name": "Value Gradation", "description": "Smooth transitions, stepped gradations", "status": "active", "artistCount": 3, "artists": [
+              {"id": "anonymous-french-smooth-gradation", "name": "Anonymous French", "title": "Smooth Gradation", "description": "Smooth tonal transitions model form within a unified envelope.", "keywords": ["smooth gradation", "unified envelope"], "references": [{"type": "documentation", "filename": "anonymous-french-smooth-gradation.md", "path": "prompts/marcel/reference/tone-features/value-gradation/anonymous-french-smooth-gradation.md"}, {"type": "gif", "filename": "anonymous-french-smooth-gradation.gif", "path": "prompts/marcel/reference/tone-features/value-gradation/anonymous-french-smooth-gradation.gif"}]},
+              {"id": "redon-stepped-gradation", "name": "Odilon Redon", "title": "Stepped Gradation (High Contrast Adjacency)", "description": "4–5 value steps and adjacency of extremes create focal emphasis.", "keywords": ["stepped values", "high contrast", "focal emphasis"], "references": [{"type": "documentation", "filename": "redon-stepped-gradation.md", "path": "prompts/marcel/reference/tone-features/value-gradation/redon-stepped-gradation.md"}, {"type": "gif", "filename": "redon-stepped-gradation.gif", "path": "prompts/marcel/reference/tone-features/value-gradation/redon-stepped-gradation.gif"}]},
+              {"id": "isabey-smooth-gradation", "name": "Isabey", "title": "Smooth Gradation", "description": "Delicate smooth gradations to articulate form.", "keywords": ["smooth gradation", "delicate"], "references": [{"type": "documentation", "filename": "isabey-smooth-gradation.md", "path": "prompts/marcel/reference/tone-features/value-gradation/isabey-smooth-gradation.md"}, {"type": "gif", "filename": "isabey-smooth-gradation.gif", "path": "prompts/marcel/reference/tone-features/value-gradation/isabey-smooth-gradation.gif"}]}
+            ]}
+          ]
+        },
+        { 
+          "id": "tone-functions", 
+          "name": "Tone Functions", 
+          "methodCount": 6, 
+          "methods": [
+            {"id": "atmospheric-depth", "name": "Atmospheric Depth", "description": "Creating spatial recession through value", "status": "active", "artistCount": 1, "artists": [
+              {"id": "friedrich-atmospheric", "name": "Caspar David Friedrich", "title": "Layered Value Recession", "description": "Near forms darkest; distance lightens and softens via value compression and haze.", "keywords": ["aerial perspective", "mist layers", "value compression", "distance haze", "near silhouette"], "references": [{"type": "documentation", "filename": "friedrich-atmospheric-depth.md", "path": "prompts/marcel/reference/tone-functions/atmospheric-depth/friedrich-atmospheric-depth.md"}]}
+            ]},
+            {"id": "spatial-definition", "name": "Spatial Definition", "description": "Organizing space through tonal relationships", "status": "active", "artistCount": 1, "artists": [
+              {"id": "canaletto-spatial", "name": "Canaletto", "title": "Architectural Planar Organization", "description": "Architectural elements create distinct spatial zones; tone separates planes.", "keywords": ["architectural planes", "spatial zones", "framing devices", "geometric structure", "planar separation"], "references": [{"type": "documentation", "filename": "canaletto-spatial-definition.md", "path": "prompts/marcel/reference/tone-functions/spatial-definition/canaletto-spatial-definition.md"}]}
+            ]},
+            {"id": "form-modeling", "name": "Form Modeling", "description": "Describing 3D form through light and shadow", "status": "active", "artistCount": 1, "artists": [
+              {"id": "rosenthal-form", "name": "Toby E. Rosenthal", "title": "Volumetric Form Through Tonal Transitions", "description": "Systematic tonal architecture constructs 3D mass with subtle half-tone variation.", "keywords": ["form modeling", "volumetric rendering", "tonal transitions", "sculptural quality"], "references": [{"type": "documentation", "filename": "rosenthal-form-modeling.md", "path": "prompts/marcel/reference/tone-functions/form-modeling/rosenthal-form-modeling.md"}]}
+            ]},
+            {"id": "mood-creation", "name": "Mood Creation", "description": "Dramatic emphasis", "status": "active", "artistCount": 2, "artists": [
+              {"id": "bolswert-mood", "name": "Bolswert (after Rubens)", "title": "Dramatic Landscape Atmosphere", "description": "Broad tonal range with monumental ruins; figures blend to deepen mood.", "keywords": ["dramatic landscape", "tonal spread", "scale contrast", "emotional tone"]},
+              {"id": "seurat-roses-mood", "name": "Georges Seurat", "title": "Quiet Tonal Envelope", "description": "Unified, soft tonal handling creates an intimate, contemplative mood.", "keywords": ["quiet mood", "unified tone", "smooth gradation", "subtle contrast"], "references": [{"type": "documentation", "filename": "seurat-roses-mood.md", "path": "prompts/marcel/reference/tone-functions/mood-creation/seurat-roses-mood.md"}, {"type": "gif", "filename": "seurat-roses-mood.gif", "path": "prompts/marcel/reference/tone-functions/mood-creation/seurat-roses-mood.gif"}]}
+            ]},
+            {"id": "light-description", "name": "Light Description", "description": "Time indication, environmental context", "status": "development", "artistCount": 1, "artists": [
+              {"id": "rosenthal-light", "name": "Toby E. Rosenthal", "title": "Directional Light Modeling", "description": "Highlight–halftone–core–cast relationships; consistent shadow direction conveys time and environment.", "keywords": ["directional light", "highlight–halftone–core", "cast shadow", "time indication", "edge quality"]}
+            ]},
+            {"id": "composition", "name": "Composition", "description": "Focal emphasis, visual hierarchy, balance and weight, unity creation", "status": "active", "artistCount": 4, "artists": [
+              {"id": "millet-focal", "name": "Jean-François Millet", "title": "Focal Emphasis", "description": "Concentrated contrast and directional cues pull the eye; value grouping supports subject dominance.", "keywords": ["focal emphasis", "value grouping", "contrast control", "directional structure", "subject dominance"]},
+              {"id": "visual-hierarchy", "name": "Composition", "title": "Visual Hierarchy", "description": "Primary/secondary/tertiary reads via size, placement, and contrast.", "keywords": ["visual hierarchy", "read order", "contrast cues", "size/placement", "value grouping"]},
+              {"id": "balance-weight", "name": "Claude Monet", "title": "Balance & Weight", "description": "Distributes masses to achieve equilibrium with counterbalances and a stable center of gravity.", "keywords": ["equilibrium", "tonal masses", "left–right weighting", "center of gravity", "counterbalance"], "references": [{"type": "documentation", "filename": "monet-balance-weight.md", "path": "prompts/marcel/reference/tone-functions/composition/monet-balance-weight.md"}]},
+              {"id": "unity-creation", "name": "Composition", "title": "Unity Creation", "description": "Links shapes and repeated tonal motifs to bind the composition.", "keywords": ["unity", "linking shapes", "tonal continuity", "repetition", "cohesion"]}
+            ]}
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+

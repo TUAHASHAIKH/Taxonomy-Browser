@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "accession_number": "29.107.35",
+    "title": "Two Cottages",
+    "artist": "Rembrandt (Rembrandt van Rijn), Dutch",
+    "date": "ca. 1636",
+    "culture": "Dutch",
+    "medium": "Etching",
+    "source_institution": "The Metropolitan Museum of Art",
+    "object_url": "https://www.metmuseum.org/art/collection/search/372495"
+  },
+  "image_info": {
+    "image_id": "rembrandt_two_cottages_1636",
+    "primary_image_url": "rembrandt_two_cottages_1636.jpg"
+  },
+  "line_quality_properties": [
+    {
+      "concept": "HatchingToDescribeForm",
+      "displayName": "Hatching to Describe Form",
+      "keywords": [
+        "Rembrandt", "hatching", "cross-hatching", "form", "structure", "texture", "architectural"
+      ],
+      "analysis": "This etching exemplifies the 'Rembrandt Principle' applied to architectural subjects. The hatching lines follow the planes and surfaces of the cottages, describing their three-dimensional structure. Notice how the direction of hatching changes to indicate different surfaces - vertical lines for walls, diagonal lines for roofs, creating a clear sense of architectural form and solidity.",
+      "drawing_tip": "Let your hatching lines follow the direction of the surfaces you're describing. Different planes should have different hatching directions.",
+      "highlight_area": [0.1, 0.2, 0.9, 0.8]
+    },
+    {
+      "concept": "TexturalVariety",
+      "displayName": "Textural Variety",
+      "keywords": [
+        "texture", "variety", "materials", "thatch", "wood", "stone", "surface quality"
+      ],
+      "analysis": "Rembrandt uses different hatching patterns and densities to suggest various materials and textures. The thatched roofs have a different mark quality than the wooden walls, which differ from the stone foundations. This textural variety adds richness and realism to the architectural forms.",
+      "drawing_tip": "Use different mark patterns to suggest different materials and textures in your drawings.",
+      "highlight_area": [0.2, 0.1, 0.8, 0.6]
+    }
+  ]
+}

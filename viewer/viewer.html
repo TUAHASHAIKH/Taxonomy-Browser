@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcel Prompt Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #eee;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+        blockquote {
+            border-left: 4px solid #ddd;
+            padding-left: 1rem;
+            color: #666;
+            margin-left: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        /* Toggle and Copy Button Styles */
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .toggle-btn, .copy-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .toggle-btn {
+            background-color: #007acc;
+            color: white;
+        }
+        
+        .toggle-btn:hover {
+            background-color: #005a9e;
+        }
+        
+        .copy-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background-color: #218838;
+        }
+        
+        .copy-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .copy-btn.copied {
+            background-color: #17a2b8;
+        }
+        
+        .bottom-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        /* Markdown View Styles */
+        .markdown-view {
+            display: none;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 2rem;
+            border-radius: 8px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .html-view {
+            display: block;
+        }
+        
+        .view-hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button class="toggle-btn" onclick="toggleView()">Markdown View</button>
+        <button class="copy-btn" onclick="copyMarkdown()" id="topCopyBtn">Copy</button>
+    </div>
+    
+    <div id="htmlContent" class="html-view"></div>
+    <div id="markdownContent" class="markdown-view"></div>
+    
+    <div class="bottom-controls">
+        <button class="copy-btn" onclick="copyMarkdown()" id="bottomCopyBtn">Copy Markdown</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        let markdownText = '';
+        let isMarkdownView = false;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/marcel-complete.md')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok. Make sure you have run the build script.');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    markdownText = text;
+                    document.getElementById('htmlContent').innerHTML = marked.parse(text);
+                    document.getElementById('markdownContent').textContent = text;
+                })
+                .catch(error => {
+                    console.error('Error fetching the prompt:', error);
+                    document.getElementById('htmlContent').innerHTML = `
+                        <h1>Error</h1>
+                        <p>Could not load <code>marcel-complete.md</code>.</p>
+                        <p>Please make sure you have run the build script:</p>
+                        <pre><code>python3 scripts/build.py</code></pre>
+                        <p>And that the server is running from the project root directory.</p>
+                    `;
+                });
+        });
+        
+        function toggleView() {
+            const htmlContent = document.getElementById('htmlContent');
+            const markdownContent = document.getElementById('markdownContent');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            const topCopyBtn = document.getElementById('topCopyBtn');
+            const bottomCopyBtn = document.getElementById('bottomCopyBtn');
+            
+            isMarkdownView = !isMarkdownView;
+            
+            if (isMarkdownView) {
+                htmlContent.style.display = 'none';
+                markdownContent.style.display = 'block';
+                toggleBtn.textContent = 'HTML View';
+                topCopyBtn.style.display = 'block';
+                bottomCopyBtn.style.display = 'block';
+            } else {
+                htmlContent.style.display = 'block';
+                markdownContent.style.display = 'none';
+                toggleBtn.textContent = 'Markdown View';
+                topCopyBtn.style.display = 'none';
+                bottomCopyBtn.style.display = 'none';
+            }
+        }
+        
+        async function copyMarkdown() {
+            try {
+                await navigator.clipboard.writeText(markdownText);
+                
+                // Visual feedback
+                const copyBtns = document.querySelectorAll('.copy-btn');
+                copyBtns.forEach(btn => {
+                    btn.textContent = 'Copied!';
+                    btn.classList.add('copied');
+                });
+                
+                setTimeout(() => {
+                    copyBtns.forEach(btn => {
+                        btn.textContent = btn.id === 'topCopyBtn' ? 'Copy' : 'Copy Markdown';
+                        btn.classList.remove('copied');
+                    });
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                alert('Failed to copy to clipboard. Please select and copy manually.');
+            }
+        }
+        
+        // Hide copy buttons initially (only show in markdown view)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('topCopyBtn').style.display = 'none';
+            document.getElementById('bottomCopyBtn').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

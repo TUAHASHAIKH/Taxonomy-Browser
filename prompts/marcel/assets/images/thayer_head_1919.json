@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "accession_number": "1984.433.307",
+    "title": "Head Study",
+    "artist": "Abbott Handerson Thayer, American",
+    "date": "ca. 1919",
+    "culture": "American",
+    "medium": "Charcoal on paper",
+    "source_institution": "The Metropolitan Museum of Art",
+    "object_url": "https://www.metmuseum.org/art/collection/search/11691"
+  },
+  "image_info": {
+    "image_id": "thayer_head_1919",
+    "primary_image_url": "thayer_head_1919.jpg"
+  },
+  "line_quality_properties": [
+    {
+      "concept": "SearchingHatching",
+      "displayName": "Searching Hatching as Record of Investigation",
+      "keywords": [
+        "Thayer", "searching", "hatching", "investigation", "process", "psychological weight", "study"
+      ],
+      "analysis": "This demonstrates the 'Thayer Principle' where hatching becomes a visible record of the artist's search and investigation. The marks show the process of finding form, with multiple attempts and corrections visible. This searching quality gives the drawing psychological weight and authenticity, showing the artist's genuine engagement with the subject.",
+      "drawing_tip": "Don't hide your search marks - let them show your process of discovering the form. This searching quality can add life to your drawings.",
+      "highlight_area": [0.2, 0.1, 0.8, 0.9]
+    },
+    {
+      "concept": "AtmosphericSoftness",
+      "displayName": "Atmospheric Softness",
+      "keywords": [
+        "atmospheric", "soft", "charcoal", "blending", "subtle", "tonal", "mood"
+      ],
+      "analysis": "Thayer uses the soft, blendable quality of charcoal to create atmospheric effects. The edges are soft and the tones blend subtly, creating a sense of air and atmosphere around the form. This technique adds emotional depth and psychological presence to the portrait.",
+      "drawing_tip": "Use soft materials like charcoal to create atmospheric effects and emotional depth in your portraits.",
+      "highlight_area": [0.3, 0.2, 0.7, 0.8]
+    }
+  ]
+}

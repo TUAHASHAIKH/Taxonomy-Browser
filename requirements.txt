@@ -1,0 +1,4 @@
+PyYAML==6.0.1
+jsonschema==4.17.3
+watchdog==3.0.0
+Flask==2.3.3

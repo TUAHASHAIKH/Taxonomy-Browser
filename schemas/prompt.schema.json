@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Prompt Metadata Schema",
+  "description": "Defines the structure for prompt.meta.yaml files.",
+  "type": "object",
+  "properties": {
+    "promptId": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "in_review", "published", "archived"]
+    },
+    "owner": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "modelTargets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "riskProfile": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": ["level"]
+    },
+    "safetyProfile": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": ["level"]
+    },
+    "changelog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "author": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "required": ["version", "date", "author", "summary"]
+      }
+    }
+  },
+  "required": [
+    "promptId",
+    "version",
+    "status",
+    "owner",
+    "modelTargets"
+  ]
+}

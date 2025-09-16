@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxonomy Browser </title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Drawing Taxonomy Browser</h1>
+        <div class="meta" id="meta"></div>
+    </div>
+
+    <div class="layout">
+        <aside class="panel panel-categories">
+            <div class="panel-header">Categories</div>
+            <div class="panel-body" id="categories"></div>
+        </aside>
+
+        <section class="panel panel-subcategories">
+            <div class="panel-header" id="subcat-header">Subcategories</div>
+            <div class="panel-body" id="subcategories"></div>
+        </section>
+
+        <section class="panel panel-methods">
+            <div class="panel-header" id="methods-header">Methods</div>
+            <div class="panel-body" id="methods"></div>
+        </section>
+
+        <section class="panel panel-details">
+            <div class="panel-header" id="details-header">Details</div>
+            <div class="panel-body" id="details">
+                <div class="empty">Select a method to see details.</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            window.TaxonomyApp.init();
+        });
+    </script>
+</body>
+</html>
+
+

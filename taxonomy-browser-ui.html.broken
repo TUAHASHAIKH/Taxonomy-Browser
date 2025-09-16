@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing Taxonomy Browser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #ffffff;
+            color: #333333;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .artist-layout {
+            display: flex;
+            height: calc(100vh - 200px);
+        }
+        
+        .artist-method-list {
+            width: 300px;
+            border-right: 1px solid #e1e5e9;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .artist-detail-panel {
+            flex: 1;
+            overflow-y: auto;
+            height: 100%;
+        }
+        
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+            position: relative;
+        }
+        
+        .column {
+            border-right: 1px solid #e1e5e9;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .column:last-child {
+            border-right: none;
+        }
+        
+        .column-1 {
+            width: 300px;
+            background: #ffffff;
+            min-width: 200px;
+            max-width: 500px;
+        }
+        
+        .column-2 {
+            width: 400px;
+            background: #ffffff;
+            min-width: 250px;
+            max-width: 600px;
+        }
+        
+        .column-4 {
+            flex: 1;
+            background: #ffffff;
+            min-width: 300px;
+        }
+        
+        .resize-handle {
+            position: absolute;
+            top: 0;
+            right: -3px;
+            width: 6px;
+            height: 100%;
+            background: transparent;
+            cursor: col-resize;
+            z-index: 10;
+        }
+        
+        .resize-handle:hover {
+            background: #2196f3;
+            opacity: 0.3;
+        }
+        
+        .resize-handle.dragging {
+            background: #2196f3;
+            opacity: 0.5;
+        }
+        
+        .column-header {
+            background: #ecf0f1;
+            padding: 1rem;
+            border-bottom: 1px solid #bdc3c7;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .category-group {
+            margin: 1rem 0;
+        }
+        
+        .category-main {
+            padding: 0.75rem 1rem;
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            cursor: pointer;
+            border-left: 3px solid #dee2e6;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .category-main:hover {
+            background: #e9ecef;
+        }
+        
+        .category-main.selected {
+            background: #e1f5fe;
+            border-left: 3px solid #1565c0;
+            color: #0d47a1;
+        }
+        
+        .category-sub {
+            padding: 0.5rem 1.5rem;
+            background: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .category-sub:hover {
+            background: #f8f9fa;
+        }
+        
+        .category-sub.selected {
+            background: #fff8e1;
+            color: #f57f17;
+            border-left: 2px solid #f9a825;
+        }
+        
+        .method-count {
+            float: right;
+            background: #6c757d;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .method-count.empty {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .method-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #ecf0f1;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .method-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .method-item.selected {
+            background: #fff3e0;
+            border-left: 3px solid #ff9800;
+            color: #e65100;
+        }
+        
+        .method-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+        
+        .method-artist {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .method-technique {
+            color: #34495e;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+        
+        .detail-panel {
+            padding: 1.5rem;
+        }
+        
+        .detail-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .artist-detail-content {
+            display: block;
+        }
+        
+        .detail-text-content {
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-image {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+            text-align: left;
+        }
+        
+        .detail-image img {
+            max-width: none;
+            height: auto;
+            display: block;
+            max-height: 400px;
+            width: auto;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .detail-image .placeholder {
+            background: #f8f9fa;
+            padding: 2rem;
+            color: #666;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        .detail-section {
+            margin-bottom: 1rem;
+        }
+        
+        .detail-section h4 {
+            color: #34495e;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-text-content h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        
+        .detail-content {
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .keyword {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        
+        .add-method:hover {
+            background: #219a52;
+        }
+        
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #ffffff;
+            border-radius: 4px;
+            border: 1px solid #f0f0f0;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Drawing Taxonomy Browser</h1>
+    </div>
+    
+    <div class="container">
+        <!-- Column 1: Primary Categories -->
+        <div class="column column-1">
+            <div class="resize-handle" id="resize-handle-1"></div>
+            <div class="column-header">Primary Categories</div>
+            
+            <div class="category-group">
+                <div class="category-main selected" onclick="selectCategory('mark')">
+                    MARK
+                </div>
+                <div class="category-sub selected" onclick="selectSubCategory('mark-features')">
+                    Mark Features <span class="method-count">9</span>
+                </div>
+                <div class="category-sub" onclick="selectSubCategory('mark-functions')">
+                    Mark Functions <span class="method-count">8</span>
+                </div>
+            </div>
+            
+            <div class="category-group">
+                <div class="category-main" onclick="selectCategory('tone')">
+                    TONE
+                </div>
+                <div class="category-sub" onclick="selectSubCategory('tone-features')">
+                    Tone Features <span class="method-count">5</span>
+                </div>
+                <div class="category-sub" onclick="selectSubCategory('tone-functions')">
+                    Tone Functions <span class="method-count">6</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Column 2: Sub-Categories & Methods -->
+        <div class="column column-2">
+            <div class="resize-handle" id="resize-handle-2"></div>
+            <div class="column-header" id="column2-header">Mark Features</div>
+            
+            <div id="column2-content">
+                <!-- Mark Features Content -->
+                <div class="content-section" id="mark-features-content">
+                    <div class="method-item" onclick="selectMethod('line-weight', this)">
+                        <div class="method-name">Line Weight & Pressure</div>
+                        <div class="method-artist">9 methods</div>
+                        <div class="method-technique">Varied pressure, thick to thin lines</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('line-quality', this)">
+                        <div class="method-name">Line Quality</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Schiele psychological line</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('speed-rhythm', this)">
+                        <div class="method-name">Speed & Rhythm</div>
+                        <div class="method-artist">0 methods</div>
+                        <div class="method-technique">Needs development</div>
+                    </div>
+                </div>
+
+                <!-- Mark Functions Content -->
+                <div class="content-section" id="mark-functions-content" style="display: none;">
+                    <div class="method-item" onclick="selectMethod('connective', this)">
+                        <div class="method-name">Connective</div>
+                        <div class="method-artist">4 methods</div>
+                        <div class="method-technique">Cassatt, Gauguin, Moronobu, Rubens</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('atmospheric', this)">
+                        <div class="method-name">Atmospheric</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Degas atmospheric energy</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('structural', this)">
+                        <div class="method-name">Structural</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Van Gogh structural building</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('contour', this)">
+                        <div class="method-name">Contour</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Rembrandt surface contour</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('rhythmic', this)">
+                        <div class="method-name">Rhythmic</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Manet rhythmic shaping</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('gestural', this)">
+                        <div class="method-name">Gestural</div>
+                        <div class="method-artist">0 methods</div>
+                        <div class="method-technique">Needs development</div>
+                    </div>
+                </div>
+
+                <!-- Tone Features Content -->
+                <div class="content-section" id="tone-features-content" style="display: none;">
+                    <div class="method-item" onclick="selectMethod('hatching-techniques', this)">
+                        <div class="method-name">Hatching Techniques</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Thayer intense darks hatching</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('blending-techniques', this)">
+                        <div class="method-name">Blending Techniques</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Stumping, finger blending, tortillon work</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('stippling-techniques', this)">
+                        <div class="method-name">Stippling Techniques</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Dot density variations, stipple textures</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('wash-techniques', this)">
+                        <div class="method-name">Wash Techniques</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Ink washes, watercolor techniques</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('value-gradation', this)">
+                        <div class="method-name">Value Gradation</div>
+                        <div class="method-artist">2 methods</div>
+                        <div class="method-technique">Smooth transitions, stepped gradations</div>
+                    </div>
+                </div>
+
+                <!-- Tone Functions Content -->
+                <div class="content-section" id="tone-functions-content" style="display: none;">
+                    <div class="method-item" onclick="selectMethod('atmospheric-depth', this)">
+                        <div class="method-name">Atmospheric Depth</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Creating spatial recession through value</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('spatial-definition', this)">
+                        <div class="method-name">Spatial Definition</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Organizing space through tonal relationships</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('form-modeling', this)">
+                        <div class="method-name">Form Modeling</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Describing 3D form through light and shadow</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('mood-creation', this)">
+                        <div class="method-name">Mood Creation</div>
+                        <div class="method-artist">2 methods</div>
+                        <div class="method-technique">Dramatic emphasis</div>
+                    </div>
+                    
+                    
+                    <div class="method-item" onclick="selectMethod('light-description', this)">
+                        <div class="method-name">Light Description</div>
+                        <div class="method-artist">1 method</div>
+                        <div class="method-technique">Time indication, environmental context</div>
+                    </div>
+                    
+                    <div class="method-item" onclick="selectMethod('composition', this)">
+                        <div class="method-name">Composition</div>
+                        <div class="method-artist">4 methods</div>
+                        <div class="method-technique">Focal emphasis, visual hierarchy, balance and weight, unity creation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="add-method">+ Add New Method</button>
+        </div>
+        
+        <!-- Column 4: Artist Works -->
+        <div class="column column-4">
+            <div class="column-header" id="column4-header">Artist Works</div>
+            
+            <div id="column4-content">
+                <div class="detail-panel">
+                    <div class="detail-title">Select an artist to view their work</div>
+                    
+                    <div class="empty-state">
+                        Click on an artist in the previous column to see their artwork and examples.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation state
+        let currentCategory = 'mark';
+        let currentSubCategory = 'mark-features';
+        let currentMethod = null;
+        let currentArtist = null;
+
+        // Category selection
+        function selectCategory(categoryId) {
+            currentCategory = categoryId;
+            currentMethod = null;
+            currentArtist = null;
+            
+            // Show/hide content sections based on selection
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(currentSubCategory).style.display = 'block';
+            
+            // Clear column 3
+            document.getElementById('column3-content').innerHTML = '<div class="detail-panel"><div class="detail-title">Select a method to view details</div><div class="empty-state">Click on any method in the middle column to see detailed information, examples, and reference materials.</div></div>';
+            
+            // Update URL
+            updateURL();
+        }
+
+        // Sub-category selection
+        function selectSubCategory(subCategory) {
+            currentSubCategory = subCategory;
+            currentMethod = null;
+            currentArtist = null;
+            
+            // Determine which parent category should be highlighted
+            const parentCategory = subCategory.startsWith('mark') ? 'mark' : 'tone';
+            currentCategory = parentCategory;
+            
+            // Update parent category selection
+            document.querySelectorAll('.category-main').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.category-main').forEach(el => {
+                if ((parentCategory === 'mark' && el.textContent.trim() === 'MARK') ||
+                    (parentCategory === 'tone' && el.textContent.trim() === 'TONE')) {
+                    el.classList.add('selected');
+                }
+            });
+            
+            // Update visual selection in column 1 for subcategories
+            document.querySelectorAll('.category-sub').forEach(el => el.classList.remove('selected'));
+            if (event && event.target) {
+                event.target.classList.add('selected');
+            } else {
+                // For programmatic calls, find the element
+                const element = document.querySelector(`[onclick*="${subCategory}"]`);
+                if (element) element.classList.add('selected');
+            }
+            
+            // Update column 2 header and content
+            const headers = {
+                'mark-features': 'Mark Features',
+                'mark-functions': 'Mark Functions', 
+                'tone-features': 'Tone Features',
+                'tone-functions': 'Tone Functions'
+            };
+            
+            document.getElementById('column2-header').textContent = headers[subCategory];
+            
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
+            
+            // Show selected content section
+            document.getElementById(subCategory + '-content').style.display = 'block';
+            
+            // Clear method selection within current section only
+            const currentSection = document.getElementById(subCategory + '-content');
+            if (currentSection) {
+                currentSection.querySelectorAll('.method-item').forEach(el => el.classList.remove('selected'));
+            }
+            
+            // Clear column 3
+            document.getElementById('column3-header').textContent = headers[subCategory] + ' Methods';
+            document.getElementById('column3-content').innerHTML = `
+                <div class="detail-panel">
+                    <div class="detail-title">Select a method to view details</div>
+                    <div class="empty-state">
+                        Click on any method in the middle column to see detailed information, examples, and reference materials.
+                    </div>
+                </div>
+            `;
+            
+            // Update selected state for artist options in the fourth column
+            document.querySelectorAll('.artist-option').forEach(el => el.classList.remove('selected'));
+            const artistOptions = document.querySelectorAll('.artist-option');
+            artistOptions.forEach(option => {
+                const onclickStr = option.getAttribute('onclick') || '';
+                if (onclickStr.includes(`'${artist}'`)) {
+                    option.classList.add('selected');
+                }
+            });
+
+            // Update artist work panel (fifth column)
+            const workPanel = document.querySelector('.artist-work-panel');
+            if (workPanel) {
+                const workGifPath = getGifPath(artist);
+                workPanel.innerHTML = `
+                    <h5>Artwork</h5>
+                    ${workGifPath ? `<img src="${workGifPath}" alt="${data.title}" style="max-width: 100%; max-height: 300px;">` : '<p>Image not available</p>'}
+                `;
+            }
+            
+            // Update URL
+            updateURL();
+        }
+
+        // Method selection
+        function selectMethod(method, element) {
+            currentMethod = method;
+            
+            // Update visual selection in column 2 - only within the current visible section
+            const currentSection = document.querySelector('.content-section:not([style*="display: none"])');
+            if (currentSection) {
+                currentSection.querySelectorAll('.method-item').forEach(el => el.classList.remove('selected'));
+            }
+            
+            // Add selected class to the clicked element
+            if (element) {
+                element.classList.add('selected');
+            } else if (event && event.target) {
+                event.target.classList.add('selected');
+            }
+            
+            // Special handling for Edge Definition - show artists in column 4
+            if (method === 'edge-definition') {
+                updateEdgeDefinitionArtists();
+            } else {
+                // Update column 3 with method details for other methods
+                updateMethodDetails(method);
+            }
+            
+            // Update URL
+            updateURL();
+        }
+
+        function updateEdgeDefinitionArtists() {
+            // Update column 3 header
+            document.getElementById('column3-header').textContent = 'Edge Definition';
+            
+            // Update column 3 content to show method info
+            document.getElementById('column3-content').innerHTML = `
+                <div class="detail-panel">
+                    <div class="detail-title">Edge Definition Method</div>
+                    <div class="detail-content">
+                        <p>Edge definition uses line weight to create clear spatial relationships and figure-ground separation.</p>
+                        <p>This method contains 2 artist approaches: Dürer and Haynes.</p>
+                    </div>
+                </div>
+            `;
+            
+            // Update column 4 with the two artists
+            document.getElementById('column4-header').textContent = 'Edge Definition Artists';
+            document.getElementById('column4-content').innerHTML = `
+                <div class="detail-panel">
+                    <div class="artist-works-list">
+                        <div class="artist-work-item" onclick="selectArtistMethod('durer', this)">
+                            <div class="artist-work-header">
+                                <h4>Dürer</h4>
+                                <small>Silhouette & Spatial Contrast</small>
+                            </div>
+                            <div class="artist-work-image">
+                                ${getGifPath('durer') ? `<img src="${getGifPath('durer')}" alt="Dürer: Edge Definition" style="max-width: 100%; max-height: 200px;">` : '<p>Image not available</p>'}
+                            </div>
+                        </div>
+                        
+                        <div class="artist-work-item" onclick="selectArtistMethod('haynes', this)">
+                            <div class="artist-work-header">
+                                <h4>Haynes</h4>
+                                <small>Sculptural Relief Through Contour</small>
+                            </div>
+                            <div class="artist-work-image">
+                                ${getGifPath('haynes') ? `<img src="${getGifPath('haynes')}" alt="Haynes: Edge Definition" style="max-width: 100%; max-height: 200px;">` : '<p>Image not available</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+            const methodData = {
+                'line-weight': {
+                    title: 'Line Weight & Pressure Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Line Weight & Pressure: 9 Artist Methods</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method" onclick="selectArtistMethod('bazicaluva', this)">
+                                        <div class="method-description">Foreground Emphasis</div>
+                                        <div class="artist-name">Bazicaluva</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('daumier', this)">
+                                        <div class="method-description">Visual Grouping & Unit Boundaries</div>
+                                        <div class="artist-name">Daumier</div>
+                                    </div>
+                                    <div class="method-item" onclick="selectMethod('edge-definition', this)">
+                                        <div class="method-name">Edge Definition</div>
+                                        <div class="method-artist">2 methods</div>
+                                        <div class="method-technique">Dürer, Haynes</div>
+                                    </div>
+                                    <div class="artist-method selected" onclick="selectArtistMethod('hokusai', this)">
+                                        <div class="method-description">Expressive Line Variation</div>
+                                        <div class="artist-name">Hokusai</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('hollar', this)">
+                                        <div class="method-description">Material Definition</div>
+                                        <div class="artist-name">Hollar</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('michelangelo', this)">
+                                        <div class="method-description">Hierarchical Detail</div>
+                                        <div class="artist-name">Michelangelo</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('ingres', this)">
+                                        <div class="method-description">Sculptural Line Weight</div>
+                                        <div class="artist-name">Ingres</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('ruisdael', this)">
+                                        <div class="method-description">Close Study</div>
+                                        <div class="artist-name">Ruisdael</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Hokusai</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">line modulation</span>
+                                                    <span class="keyword">expressive weight</span>
+                                                    <span class="keyword">emotional emphasis</span>
+                                                    <span class="keyword">rhythmic variation</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Uses varied line weights to create emotional emphasis and visual hierarchy. Thick lines for primary forms, thin lines for details and secondary elements.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">hokusai-woman-baby-line-variation.md</div>
+                                                    <div class="reference-file">hokusai-woman-baby-line-variation.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-features/line-weight/hokusai-woman-baby-line-variation.gif" alt="Hokusai: Expressive Line Variation">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'edge-definition': {
+                    title: 'Edge Definition Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Edge Definition: 2 Artist Methods</div>
+
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('durer', this)">
+                                        <div class="method-description">Silhouette & Spatial Contrast</div>
+                                        <div class="artist-name">Dürer</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('haynes', this)">
+                                        <div class="method-description">Sculptural Relief Through Contour</div>
+                                        <div class="artist-name">Haynes</div>
+                                    </div>
+                                </div>
+
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Dürer</h4>
+
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">edge definition</span>
+                                                    <span class="keyword">silhouette emphasis</span>
+                                                    <span class="keyword">figure-ground separation</span>
+                                                    <span class="keyword">interior modeling</span>
+                                                    <span class="keyword">shadow-side weighting</span>
+                                                    <span class="keyword">spatial clarity</span>
+                                                    <span class="keyword">chiaroscuro effect</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Heaviest lines for silhouettes, medium weight where forms meet within subjects, and lightest lines for interior surface modeling can create clear spatial relationships. This achieves edge contrast that brings forms forward from the background.
+                                                </div>
+                                            </div>
+
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">durer-edge-definition.md</div>
+                                                    <div class="reference-file">durer-adam-eve-edge-definition.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-features/line-weight/durer-adam-eve-edge-definition.gif" alt="Dürer: Edge Definition">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'line-quality': {
+                    title: 'Line Quality Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Schiele: Psychological Line</div>
+                            
+                            <div class="detail-section">
+                                <h4>Keywords</h4>
+                                <div class="keywords">
+                                    <span class="keyword">psychological expression</span>
+                                    <span class="keyword">nervous energy</span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h4>Function</h4>
+                                <div class="detail-content">
+                                    Creates emotional resonance between artist and viewer through expressive mark-making that reveals inner psychological states.
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h4>Reference Files</h4>
+                                <div class="reference-files">
+                                    <div class="reference-file">schiele-herbert-rainer-psychological-line.md</div>
+                                    <div class="reference-file">schiele-herbert-rainer-psychological-line.gif</div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-image">
+                                <img src="./prompts/marcel/reference/mark-features/line-quality/schiele-herbert-rainer-psychological-line.gif" alt="Schiele: Psychological Line">
+                            </div>
+                        </div>
+                    `,
+                },
+                'connective': {
+                    title: 'Connective Mark Functions',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Connective Mark: 4 Artist Methods</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('cassatt-connective', this)">
+                                        <div class="method-description">Intimacy Through Circular Movement</div>
+                                        <div class="artist-name">Cassatt</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('gauguin-connective', this)">
+                                        <div class="method-description">Dynamic Eye Movement</div>
+                                        <div class="artist-name">Gauguin</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('moronobu-connective', this)">
+                                        <div class="method-description">Unity Through Doubling</div>
+                                        <div class="artist-name">Moronobu</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('rubens-connective', this)">
+                                        <div class="method-description">Unified Action</div>
+                                        <div class="artist-name">Rubens</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Cassatt</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">circular movement</span>
+                                                    <span class="keyword">intimacy</span>
+                                                    <span class="keyword">visual binding</span>
+                                                    <span class="keyword">flowing lines</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Creates intimate connections between figures through circular, flowing line movements that visually bind subjects together.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">cassatt-loge-intimacy.md</div>
+                                                    <div class="reference-file">cassatt-loge-intimacy.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-functions/connective/cassatt-loge-intimacy.gif" alt="Cassatt: Intimacy Through Circular Movement">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'atmospheric': {
+                    title: 'Atmospheric Mark Functions',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Atmospheric Mark: 1 Artist Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('degas-atmospheric', this)">
+                                        <div class="method-description">Atmospheric Energy</div>
+                                        <div class="artist-name">Degas</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Degas</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">atmospheric energy</span>
+                                                    <span class="keyword">directional hatching</span>
+                                                    <span class="keyword">radiating forces</span>
+                                                    <span class="keyword">movement enhancement</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Uses directional hatching and radiating mark patterns to create atmospheric energy that enhances the sense of movement and dynamism.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">degas-dancer-atmospheric-energy.md</div>
+                                                    <div class="reference-file">degas-dancer-atmospheric-energy.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-functions/atmospheric/degas-dancer-atmospheric-energy.gif" alt="Degas: Atmospheric Energy">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'structural': {
+                    title: 'Structural Mark Functions',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Structural Mark: 1 Artist Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('van-gogh-structural', this)">
+                                        <div class="method-description">Structural Building</div>
+                                        <div class="artist-name">Van Gogh</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Van Gogh</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">structural building</span>
+                                                    <span class="keyword">hatching organization</span>
+                                                    <span class="keyword">tonal variations</span>
+                                                    <span class="keyword">physical trajectories</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Organizes hatching patterns to build structural form through systematic tonal variations and clear physical trajectories.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">van-gogh-weeping-tree-structure.md</div>
+                                                    <div class="reference-file">van-gogh-weeping-tree-structure.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-functions/structural/van-gogh-weeping-tree-structure.gif" alt="Van Gogh: Structural Building">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'contour': {
+                    title: 'Contour Mark Functions',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Contour Mark: 1 Artist Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('rembrandt-contour', this)">
+                                        <div class="method-description">Surface Contour</div>
+                                        <div class="artist-name">Rembrandt</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Rembrandt</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">surface contour</span>
+                                                    <span class="keyword">form following</span>
+                                                    <span class="keyword">edge definition</span>
+                                                    <span class="keyword">hatching direction</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Follows surface contours with hatching direction to define form and create convincing three-dimensional volume through edge definition.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">rembrandt-clement-de-jonghe-form.md</div>
+                                                    <div class="reference-file">rembrandt-clement-de-jonghe-form.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-functions/contour/rembrandt-clement-de-jonghe-form.gif" alt="Rembrandt: Surface Contour">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'rhythmic': {
+                    title: 'Rhythmic Mark Functions',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Rhythmic Mark: 1 Artist Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('manet-rhythmic', this)">
+                                        <div class="method-description">Rhythmic Shaping</div>
+                                        <div class="artist-name">Manet</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Manet</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">rhythmic shaping</span>
+                                                    <span class="keyword">parallel marks</span>
+                                                    <span class="keyword">contour following</span>
+                                                    <span class="keyword">volume building</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Uses rhythmic parallel marks that follow contours to build volume and create dynamic surface patterns that enhance form.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">manet-plainte-moresque-rhythm.md</div>
+                                                    <div class="reference-file">manet-plainte-moresque-rhythm.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-functions/rhythmic/manet-plainte-moresque-rhythm.gif" alt="Manet: Rhythmic Shaping">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'hatching-techniques': {
+                    title: 'Hatching Techniques',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Hatching Techniques: 1 Artist Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('thayer-hatching', this)">
+                                        <div class="method-description">Intense Darks Hatching</div>
+                                        <div class="artist-name">Thayer</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Thayer</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">intense darks</span>
+                                                    <span class="keyword">hatching</span>
+                                                    <span class="keyword">cross-hatching</span>
+                                                    <span class="keyword">maximum tonal range</span>
+                                                    <span class="keyword">blending integration</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Combines intense dark hatching with blended tones to achieve maximum tonal range and dramatic contrast effects.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">thayer-head-artist-contrast.md</div>
+                                                    <div class="reference-file">thayer-head-artist-contrast.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/mark-features/tonal-technique/thayer-head-artist-contrast.gif" alt="Thayer: Intense Darks Hatching">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'blending-techniques': {
+                    title: 'Blending Techniques',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Blending Techniques: 1 Artist Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('seurat-stumping', this)">
+                                        <div class="method-description">Stumping for Atmospheric Modeling</div>
+                                        <div class="artist-name">Seurat</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Seurat</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">stumping</span>
+                                                    <span class="keyword">atmospheric blending</span>
+                                                    <span class="keyword">velvety blacks</span>
+                                                    <span class="keyword">pressure variation</span>
+                                                    <span class="keyword">tonal passages</span>
+                                                    <span class="keyword">quiet domesticity</span>
+                                                    <span class="keyword">seamless gradation</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Uses stumping with varied crayon pressure to create seamless atmospheric gradations - heavy pressure for rich darks, light pressure for luminous mid-tones, allowing paper texture to enhance the velvety quality. Creates unified atmospheric envelopes around forms, perfect for capturing quiet, contemplative moods and subtle interior lighting effects.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">seurat-stumping.md</div>
+                                                    <div class="reference-file">seurat-stumping.gif</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <img src="./prompts/marcel/reference/tone-features/blending-techniques/seurat-stumping.gif" alt="Seurat: Stumping for Atmospheric Modeling">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+
+                'stippling-techniques': {
+                    title: 'Stippling Techniques',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Watson: Stippling for Tonal Gradation</div>
+                            
+                            <div class="detail-section">
+                                <h4>Keywords</h4>
+                                <div class="keywords">
+                                    <span class="keyword">stippling</span>
+                                    <span class="keyword">dot density</span>
+                                    <span class="keyword">tonal gradation</span>
+                                    <span class="keyword">engraving technique</span>
+                                    <span class="keyword">atmospheric depth</span>
+                                    <span class="keyword">texture building</span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h4>Method</h4>
+                                <div class="detail-content">
+                                    Creates tonal gradations through varying dot density - dense stippling for dark areas, sparse stippling for light areas. Builds form through accumulated dots rather than continuous lines, allowing for subtle atmospheric effects and precise tonal control.
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h4>Reference Files</h4>
+                                <div class="reference-files">
+                                    <div class="reference-file">watson-garrick-stippling.md</div>
+                                    <div class="reference-file">watson-garrick-stippling.gif</div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-image">
+                                <img src="./prompts/marcel/reference/tone-features/stippling-techniques/watson-garrick-stippling.gif" alt="Watson: Stippling for Tonal Gradation">
+                            </div>
+                        </div>
+                    `,
+                },
+
+                'wash-techniques': {
+                    title: 'Wash Techniques',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Hugo: Atmospheric Wash Modeling</div>
+                            
+                            <div class="detail-section">
+                                <h4>Keywords</h4>
+                                <div class="keywords">
+                                    <span class="keyword">ink wash</span>
+                                    <span class="keyword">atmospheric modeling</span>
+                                    <span class="keyword">fluid application</span>
+                                    <span class="keyword">tonal gradation</span>
+                                    <span class="keyword">dramatic contrast</span>
+                                    <span class="keyword">organic form</span>
+                                    <span class="keyword">spontaneous technique</span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h4>Method</h4>
+                                <div class="detail-content">
+                                    Uses varying concentrations of wash from saturated darks to light atmospheric tones to build both form and environment. Apply with ink (India ink, fountain pen ink, or walnut ink), watercolor, or diluted acrylic using brushes, sponges, or cloth for different textures. Work on absorbent paper for best flow and blending.
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h4>Reference Files</h4>
+                                <div class="reference-files">
+                                    <div class="reference-file">hugo-octopus-wash.md</div>
+                                    <div class="reference-file">hugo-octopus-wash.gif</div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-image">
+                                <img src="./prompts/marcel/reference/tone-features/wash-techniques/hugo-octopus-wash.gif" alt="Hugo: Atmospheric Wash Modeling">
+                            </div>
+                        </div>
+                    `,
+                },
+
+                'value-gradation': {
+                    title: 'Value Gradation Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Value Gradation: 2 Artist Methods</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('redon-stepped-gradation', this)">
+                                        <div class="method-description">Stepped Gradation (High Contrast Adjacency)</div>
+                                        <div class="artist-name">Redon</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('seurat-smooth-gradation', this)">
+                                        <div class="method-description">Smooth Gradation (Unified Envelope)</div>
+                                        <div class="artist-name">Seurat</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Redon</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">stepped values</span>
+                                                    <span class="keyword">high contrast adjacency</span>
+                                                    <span class="keyword">focal emphasis</span>
+                                                    <span class="keyword">value clarity</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Distinct value steps (white, light mid, dark mid, black). Places darkest dark next to lightest light to create immediate visual dominance and focal emphasis.
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Reference Files</h4>
+                                                <div class="reference-files">
+                                                    <div class="reference-file">redon-stepped-gradation.md</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <div class="placeholder">Image not available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+
+                'mood-creation': {
+                    title: 'Mood Creation Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Mood Creation: 2 Artist Methods</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method" onclick="selectArtistMethod('bolswert-mood', this)">
+                                        <div class="method-description">Dramatic Landscape Atmosphere</div>
+                                        <div class="artist-name">Bolswert (after Rubens)</div>
+                                    </div>
+                                    <div class="artist-method selected" onclick="selectArtistMethod('seurat-roses-mood', this)">
+                                        <div class="method-description">Quiet Tonal Envelope</div>
+                                        <div class="artist-name">Seurat</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Seurat</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">quiet mood</span>
+                                                    <span class="keyword">unified tone</span>
+                                                    <span class="keyword">smooth gradation</span>
+                                                    <span class="keyword">subtle contrast</span>
+                                                    <span class="keyword">tonal spread</span>
+                                                    <span class="keyword">human scale vs. ruins</span>
+                                                    <span class="keyword">mood emphasis</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Uses sweeping tonal ranges and grand ruin forms to create an all-encompassing atmosphere; figures blend into surroundings to reinforce mood.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <div class="placeholder">Image not available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'composition': {
+                    title: 'Composition Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Composition: 4 Methods</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('millet-focal', this)">
+                                        <div class="method-description">Focal Emphasis</div>
+                                        <div class="artist-name">Millet</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('visual-hierarchy', this)">
+                                        <div class="method-description">Visual Hierarchy</div>
+                                        <div class="artist-name"></div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('monet-balance', this)">
+                                        <div class="method-description">Balance & Weight</div>
+                                        <div class="artist-name">Claude Monet</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('unity-creation', this)">
+                                        <div class="method-description">Unity Creation</div>
+                                        <div class="artist-name"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Millet: Focal Emphasis</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">focal emphasis</span>
+                                                    <span class="keyword">light–dark contrast</span>
+                                                    <span class="keyword">directional cues</span>
+                                                    <span class="keyword">value grouping</span>
+                                                    <span class="keyword">isolation</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Concentrates contrast and organizes value groups to pull the eye to the subject; directional elements steer attention. Reference: The Flight Into Egypt (AIC).
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <div class="placeholder">Image not available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'atmospheric-depth': {
+                    title: 'Atmospheric Depth Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Atmospheric Depth: 1 Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('friedrich-atmospheric', this)">
+                                        <div class="method-description">Layered Value Recession</div>
+                                        <div class="artist-name">Caspar David Friedrich</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Atmospheric Depth: Layered Value Recession</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">aerial perspective</span>
+                                                    <span class="keyword">value taper</span>
+                                                    <span class="keyword">distance softening</span>
+                                                    <span class="keyword">foreground weight</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Foreground values carry the heaviest range; mid and far distances compress and lighten. Edges and contrast diminish with distance to create spatial recession.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <div class="placeholder">Image not available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'form-modeling': {
+                    title: 'Form Modeling Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Form Modeling: 2 Artist Methods</div>
+
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('anonymous-french-form', this)">
+                                        <div class="method-description">Core Shadow & Reflected Light</div>
+                                        <div class="artist-name">Anonymous French</div>
+                                    </div>
+                                    <div class="artist-method" onclick="selectArtistMethod('rosenthal-form', this)">
+                                        <div class="method-description">Volumetric Form Through Tonal Transitions</div>
+                                        <div class="artist-name">Toby E. Rosenthal</div>
+                                    </div>
+                                </div>
+
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Anonymous French: Core Shadow & Reflected Light</h4>
+
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">core shadow</span>
+                                                    <span class="keyword">halftone</span>
+                                                    <span class="keyword">reflected light</span>
+                                                    <span class="keyword">terminator</span>
+                                                    <span class="keyword">chiaroscuro</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Models 3D form with a clear light-to-shadow structure: highlight, halftone, core, reflected light, and cast shadow organized for legible volume.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <div class="placeholder">Image not available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'spatial-definition': {
+                    title: 'Spatial Definition Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Spatial Definition: 1 Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('canaletto-spatial', this)">
+                                        <div class="method-description">Architectural Planar Organization</div>
+                                        <div class="artist-name">Canaletto</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Spatial Definition: Architectural Planar Organization</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">architectural planes</span>
+                                                    <span class="keyword">spatial zones</span>
+                                                    <span class="keyword">framing devices</span>
+                                                    <span class="keyword">geometric structure</span>
+                                                    <span class="keyword">planar separation</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Uses architectural elements (arches, walls, passages) to create distinct spatial zones and organize complex space through clear geometric structure and planar relationships.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <div class="placeholder">Image not available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                },
+                'light-description': {
+                    title: 'Light Description Methods',
+                    content: `
+                        <div class="detail-panel">
+                            <div class="detail-title">Light Description: 1 Method</div>
+                            
+                            <div class="artist-layout">
+                                <div class="artist-method-list">
+                                    <div class="artist-method selected" onclick="selectArtistMethod('rosenthal-light', this)">
+                                        <div class="method-description">Directional Light Modeling</div>
+                                        <div class="artist-name">Toby E. Rosenthal</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="artist-detail-panel" id="artist-detail-content">
+                                    <div class="artist-detail-content">
+                                        <div class="detail-text-content">
+                                            <h4>Light Description: Directional Light Modeling</h4>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Keywords</h4>
+                                                <div class="keywords">
+                                                    <span class="keyword">directional light</span>
+                                                    <span class="keyword">highlight to shadow</span>
+                                                    <span class="keyword">cast shadow</span>
+                                                    <span class="keyword">local value vs. light</span>
+                                                    <span class="keyword">time indication</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="detail-section">
+                                                <h4>Method</h4>
+                                                <div class="detail-content">
+                                                    Describes light's direction and quality through clear highlight–halftone–core–cast relationships; consistent shadow direction conveys time and environmental context.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-image">
+                                            <div class="placeholder">Image not available</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                }
+            };
+
+            const data = methodData[method] || {
+                title: 'Method Details',
+                content: `
+                    <div class="detail-panel">
+                        <div class="detail-title">Method Under Development</div>
+                        <div class="empty-state">
+                            This method is being developed. Check back later for detailed information and examples.
+                        </div>
+                    </div>
+                `
+            };
+
+            document.getElementById('column3-header').textContent = data.title;
+            document.getElementById('column3-content').innerHTML = data.content;
+        }
+
+        // Column resizing functionality
+        let isResizing = false;
+        let currentResizer = null;
+        let startX = 0;
+        let startWidth = 0;
+
+        function initializeResizers() {
+            const resizer1 = document.getElementById('resize-handle-1');
+            const resizer2 = document.getElementById('resize-handle-2');
+            const column1 = document.querySelector('.column-1');
+            const column2 = document.querySelector('.column-2');
+
+            function startResize(e, resizer, column) {
+                isResizing = true;
+                currentResizer = resizer;
+                startX = e.clientX;
+                startWidth = parseInt(window.getComputedStyle(column).width, 10);
+                resizer.classList.add('dragging');
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            }
+
+            function doResize(e) {
+                if (!isResizing) return;
+                
+                const dx = e.clientX - startX;
+                let newWidth = startWidth + dx;
+                
+                if (currentResizer === document.getElementById('resize-handle-1')) {
+                    newWidth = Math.max(200, Math.min(500, newWidth));
+                    column1.style.width = newWidth + 'px';
+                } else if (currentResizer === document.getElementById('resize-handle-2')) {
+                    newWidth = Math.max(250, Math.min(600, newWidth));
+                    column2.style.width = newWidth + 'px';
+                }
+            }
+
+            function stopResize() {
+                if (!isResizing) return;
+                isResizing = false;
+                if (currentResizer) {
+                    currentResizer.classList.remove('dragging');
+                }
+                currentResizer = null;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+
+            resizer1.addEventListener('mousedown', (e) => startResize(e, resizer1, column1));
+            resizer2.addEventListener('mousedown', (e) => startResize(e, resizer2, column2));
+            document.addEventListener('mousemove', doResize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        // Initialize resizers when page loads
+        document.addEventListener('DOMContentLoaded', initializeResizers);
+
+        // URL-based navigation
+        function updateURL() {
+            let hash = '#' + currentSubCategory;
+            if (currentMethod) {
+                hash += '/' + currentMethod;
+                if (currentArtist) {
+                    hash += '/' + currentArtist;
+                }
+            }
+            window.history.replaceState(null, null, hash);
+        }
+
+        function parseURL() {
+            const hash = window.location.hash.substring(1); // Remove #
+            if (!hash) return null;
+            
+            const parts = hash.split('/');
+            return {
+                category: parts[0] || null,
+                method: parts[1] || null,
+                artist: parts[2] || null
+            };
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlState = parseURL();
+            
+            if (urlState && urlState.category && 
+                ['mark-features', 'mark-functions', 'tone-features', 'tone-functions'].includes(urlState.category)) {
+                
+                // Restore from URL
+                selectSubCategory(urlState.category);
+                
+                if (urlState.method) {
+                    setTimeout(() => {
+                        selectMethod(urlState.method, null);
+                        if (urlState.artist) {
+                            setTimeout(() => {
+                                selectArtistMethod(urlState.artist, null);
+                            }, 100);
+                        }
+                    }, 50);
+                }
+            } else {
+                // Default to mark-features
+                selectSubCategory('mark-features');
+            }
+        });
+
+        // Get GIF path for artist method
+        function getGifPath(artist) {
+            const gifPaths = {
+                'bazicaluva': 'prompts/marcel/reference/mark-features/line-weight/bazicaluva-landscape-foreground-emphasis.gif',
+                'daumier': 'prompts/marcel/reference/mark-features/line-weight/daumier-reparations-visual-grouping.gif',
+                'durer': 'prompts/marcel/reference/mark-features/line-weight/durer-adam-eve-edge-definition.gif',
+                'haynes': 'prompts/marcel/reference/mark-features/line-weight/haynes-death-pale-horse-edge-definition.gif',
+                'hokusai': 'prompts/marcel/reference/mark-features/line-weight/hokusai-woman-baby-line-variation.gif',
+                'hollar': 'prompts/marcel/reference/mark-features/line-weight/hollar-muff-material-definition.gif',
+                'michelangelo': 'prompts/marcel/reference/mark-features/line-weight/michelangelo-creation-hierarchical-detail.gif',
+                'ingres': 'prompts/marcel/reference/mark-features/line-weight/ingres-madame-lethiere.gif',
+                'ruisdael': 'prompts/marcel/reference/mark-features/line-weight/ruisdael-dune-close-study.gif',
+                'line-quality': 'prompts/marcel/reference/mark-features/line-quality/schiele-herbert-rainer-psychological-line.gif',
+                'cassatt-connective': 'prompts/marcel/reference/mark-functions/connective/cassatt-loge-intimacy.gif',
+                'gauguin-connective': 'prompts/marcel/reference/mark-functions/connective/gauguin-tahitian-hair-connection.gif',
+                'moronobu-connective': 'prompts/marcel/reference/mark-functions/connective/moronobu-kimono-doubling.gif',
+                'rubens-connective': 'prompts/marcel/reference/mark-functions/connective/rubens-ecce-homo-unified-action.gif',
+                'thayer-hatching': 'prompts/marcel/reference/mark-features/tonal-technique/thayer-head-artist-contrast.gif',
+                'seurat-roses-mood': 'prompts/marcel/reference/tone-functions/mood-creation/seurat-roses-mood.gif',
+                'anonymous-french-form': 'prompts/marcel/reference/tone-features/value-gradation/anonymous-french-smooth-gradation.gif',
+                'monet-balance': 'prompts/marcel/reference/tone-functions/composition/monet-balance-weight.gif',
+                'rosenthal-form': 'prompts/marcel/reference/tone-functions/form-modeling/rosenthal-character-study-form-modeling.gif'
+            };
+            
+            return gifPaths[artist];
+        }
+
+        function selectArtistMethod(artist, element) {
+            currentArtist = artist;
+            
+            // Find the artist element if not provided (for URL restoration)
+            if (!element) {
+                // Look for artist method with matching onclick attribute
+                const artistMethods = document.querySelectorAll('.artist-method');
+                for (let method of artistMethods) {
+                    const onclick = method.getAttribute('onclick');
+                    if (onclick && onclick.includes(`'${artist}'`)) {
+                        element = method;
+                        break;
+                    }
+                }
+            }
+            
+            // Update visual selection - only within current artist layout
+            const currentArtistLayout = element ? element.closest('.artist-layout') : null;
+            if (currentArtistLayout) {
+                currentArtistLayout.querySelectorAll('.artist-method').forEach(el => el.classList.remove('selected'));
+            }
+            
+            if (element) {
+                element.classList.add('selected');
+            }
+            
+            // Update detail content based on artist
+            const artistData = {
+                'bazicaluva': {
+                    title: 'Bazicaluva: Foreground Emphasis',
+                    description: 'Progressively heavier line weights for foreground elements, with confident pen strokes that anchor closest forms, can create spatial depth. This achieves atmospheric perspective that guides the eye from front to back.',
+                    keywords: ['spatial hierarchy', 'foreground emphasis', 'progressive line weight', 'atmospheric perspective', 'depth creation', 'shadow indication'],
+                    references: ['📄 bazicaluva-foreground-emphasis.md', '🎬 bazicaluva-landscape-foreground-emphasis.gif'],
+{{ ... }}
+                    sourceFile: '/prompts/marcel/reference/mark-features/line-weight/bazicaluva-foreground-emphasis.md'
+                },
+                'daumier': {
+                    title: 'Daumier: Visual Grouping & Unit Boundaries',
+                    description: 'Heavy contour around grouped objects vs. surface beneath. Weight shifts where shadow falls, grounding forms. Outline related elements as single mass with heavier outline weight.',
+                    keywords: ['visual grouping', 'unit boundaries', 'mass definition'],
+                    references: ['📄 daumier-visual-grouping.md'],
+                    sourceFile: '/prompts/marcel/reference/mark-features/line-weight/daumier-visual-grouping.md'
+                },
+                'durer': {
+                    title: 'Dürer: Edge Definition',
+                    description: 'Heaviest lines for silhouettes, medium weight where forms meet within subjects, and lightest lines for interior surface modeling can create clear spatial relationships. This achieves edge contrast that brings forms forward from the background.',
+                    keywords: ['edge definition', 'silhouette emphasis', 'figure-ground separation', 'interior modeling', 'shadow-side weighting', 'spatial clarity', 'chiaroscuro effect'],
+                    references: ['📄 durer-edge-definition.md', '🎬 durer-adam-eve-edge-definition.gif'],
+                    sourceFile: '/prompts/marcel/reference/mark-features/line-weight/durer-edge-definition.md'
+                },
+                'hokusai': {
+                    title: 'Hokusai: Expressive Line Variation',
+                    description: 'Vary both line weight and drawing speed expressively - use heavier, faster strokes for structural elements and bold emphasis, lighter, slower marks for delicate details and tender areas. This dual variation creates visual hierarchy while conveying the emotional character and energy of your subject through the velocity and weight of your marks.',
+                    keywords: ['line modulation', 'expressive weight', 'emotional emphasis', 'character definition', 'rhythmic variation', 'gestural quality', 'mark velocity', 'speed contrast'],
+                    references: ['📄 hokusai-woman-baby-line-variation.md', '🎬 hokusai-woman-baby-line-variation.gif'],
+                    sourceFile: '/prompts/marcel/reference/mark-features/line-weight/hokusai-woman-baby-line-variation.md'
+                },
+                'hollar': {
+                    title: 'Hollar: Material Definition',
+                    description: 'Varying line direction and rhythm - flowing parallel lines for smooth fabrics, radiating curved lines for fur, and precise controlled lines for structured surfaces - can define different materials. This creates tactile differentiation through mark-making technique.',
+                    keywords: ['material definition', 'line direction', 'line rhythm', 'texture indication', 'surface character', 'directional hatching', 'radiating lines', 'parallel lines'],
+                    references: ['📄 hollar-material-definition.md', '🎬 hollar-muff-material-definition.gif'],
+                    sourceFile: '/prompts/marcel/reference/mark-features/line-weight/hollar-material-definition.md'
+                },
+                'michelangelo': {
+                    title: 'Michelangelo: Hierarchical Detail',
+                    description: 'Primary muscles get full line weight. Secondary anatomy gets medium weight. Background barely marked. Darker contours align with shadow boundaries.',
+                    keywords: ['hierarchical detail', 'anatomical emphasis', 'shadow alignment']
+                },
+                'ingres': {
+                    title: 'Ingres: Sculptural Line Weight',
+                    description: 'The contour line "breathes" - thicker in shadow areas (under chin, elbow crook), thinner on light-catching edges. Creates 3D illusion with line alone through controlled pressure variation that follows the form\'s relationship to light.',
+                    keywords: ['sculptural weight', 'breathing line', '3D illusion', 'light relationship']
+                },
+                'ruisdael': {
+                    title: 'Ruisdael: Close Study',
+                    description: 'Meticulous line work captures intricate details of natural forms. Every element rendered with careful attention through precise, controlled line work that builds complex forms through accumulated detail.',
+                    keywords: ['close study', 'meticulous detail', 'natural forms', 'accumulated detail']
+                },
+                'cassatt-connective': {
+                    title: 'Cassatt: Intimacy Through Circular Movement',
+                    description: 'Using flowing lines, this method guides the eye in continuous circular paths to bind figures together visually.',
+                    keywords: ['circular movement', 'intimacy', 'visual binding', 'flowing lines'],
+                    references: ['📄 cassatt-loge-intimacy.md', '🎬 cassatt-loge-intimacy.gif']
+                },
+                'gauguin-connective': {
+                    title: 'Gauguin: Dynamic Eye Movement',
+                    description: 'Creates dynamic visual connections that guide the viewer\'s eye through the composition with bold, connecting strokes.',
+                    keywords: ['dynamic movement', 'eye guidance', 'bold strokes', 'visual connection'],
+                    references: ['📄 gauguin-tahitian-hair-connection.md', '🎬 gauguin-tahitian-hair-connection.gif']
+                },
+                'moronobu-connective': {
+                    title: 'Moronobu: Unity Through Doubling',
+                    description: 'Uses doubling techniques to create unified visual connections between elements in the composition.',
+                    keywords: ['unity', 'doubling technique', 'visual connection', 'compositional harmony'],
+                    references: ['📄 moronobu-kimono-doubling.md', '🎬 moronobu-kimono-doubling.gif']
+                },
+                'rubens-connective': {
+                    title: 'Rubens: Unified Action',
+                    description: 'Creates unified action through connective marks that bind multiple figures into a single compositional movement.',
+                    keywords: ['unified action', 'compositional movement', 'figure binding', 'dynamic unity'],
+                    references: ['📄 rubens-ecce-homo-unified-action.md', '🎬 rubens-ecce-homo-unified-action.gif']
+                },
+                'degas-atmospheric': {
+                    title: 'Degas: Atmospheric Energy',
+                    description: 'Directional hatching creates forces that radiate from subject to enhance movement and atmospheric energy.',
+                    keywords: ['atmospheric energy', 'directional hatching', 'radiating forces', 'movement enhancement'],
+                    references: ['📄 degas-dancer-atmospheric-energy.md', '🎬 degas-dancer-atmospheric-energy.gif']
+                },
+                'van-gogh-structural': {
+                    title: 'Van Gogh: Structural Building',
+                    description: 'Hatching organizes tonal variations into contours, mass, and physical trajectories to build structural form.',
+                    keywords: ['structural building', 'hatching organization', 'tonal variations', 'physical trajectories'],
+                    references: ['📄 van-gogh-weeping-tree-structure.md', '🎬 van-gogh-weeping-tree-structure.gif']
+                },
+                'rembrandt-contour': {
+                    title: 'Rembrandt: Surface Contour',
+                    description: 'Hatching defines and follows surface contours rather than building form structurally.',
+                    keywords: ['surface contour', 'form following', 'edge definition', 'hatching direction'],
+                    references: ['📄 rembrandt-clement-de-jonghe-form.md', '🎬 rembrandt-clement-de-jonghe-form.gif']
+                },
+                'manet-rhythmic': {
+                    title: 'Manet: Rhythmic Shaping',
+                    description: 'Repeating, parallel marks follow contours to build volume and rhythm simultaneously.',
+                    keywords: ['rhythmic shaping', 'parallel marks', 'contour following', 'volume building'],
+                    references: ['📄 manet-plainte-moresque-rhythm.md', '🎬 manet-plainte-moresque-rhythm.gif']
+                },
+                'thayer-hatching': {
+                    title: 'Thayer: Intense Darks Hatching Within Blending',
+                    description: 'Uses intense darks hatching and cross-hatching to push into the darkest darks and achieve maximum tonal range. The hatching works within areas of blending to create the deepest shadows and most intense darkness possible.',
+                    keywords: ['intense darks', 'hatching', 'cross-hatching', 'maximum tonal range', 'blending integration'],
+                    references: ['📄 thayer-head-artist-contrast.md', '🎬 thayer-head-artist-contrast.gif']
+                },
+                'haynes-edge-definition': {
+                    title: 'Joseph Haynes: Edge Definition (Death on a Pale Horse)',
+                    description: 'Uses varied line weight and pressure to define edges with precision; heavier pressure for dominant contours, lighter pressure for secondary edges and details.',
+                    keywords: ['edge definition', 'line weight variation', 'pressure control', 'contour emphasis', 'detail hierarchy']
+                },
+                'redon-stepped-gradation': {
+                    title: 'Redon: Stepped Gradation (High Contrast Adjacency)',
+                    description: '4–5 distinct value steps create immediate focal emphasis. Darkest dark placed adjacent to lightest light for visual dominance and dramatic clarity.',
+                    keywords: ['stepped values', 'high contrast adjacency', 'focal emphasis', 'value clarity'],
+                    references: ['📄 redon-stepped-gradation.md']
+                },
+                'seurat-smooth-gradation': {
+                    title: 'Seurat: Smooth Gradation (Unified Envelope)',
+                    description: 'Smooth tonal transitions unify forms into a single atmospheric envelope. Encourages calm mood through restrained value shifts and coherent light.',
+                    keywords: ['smooth transitions', 'unified envelope', 'atmospheric modeling', 'subtle value range']
+                },
+                'bolswert-mood': {
+                    title: 'Bolswert: Dramatic Landscape Atmosphere',
+                    description: 'All-encompassing landscape mood achieved through broad tonal range and monumental ruins; small figures blend into setting to deepen emotional tone.',
+                    keywords: ['dramatic landscape', 'tonal spread', 'scale contrast', 'emotional tone']
+                },
+                'seurat-roses-mood': {
+                    title: 'Seurat: Roses in a Vase — Quiet Tonal Envelope',
+                    description: 'Unified, soft tonal handling creates intimate, contemplative mood; smooth gradation supports mood creation without stark contrasts.',
+                    keywords: ['quiet mood', 'unified tone', 'smooth gradation', 'subtle contrast'],
+                    image: './prompts/marcel/reference/tone-functions/mood-creation/seurat-roses-mood.gif',
+                    referenceFiles: ['seurat-roses-mood.md', 'seurat-roses-mood.gif']
+                },
+                'millet-focal': {
+                    title: 'Millet: Focal Emphasis (The Flight Into Egypt)',
+                    description: 'Focal point created by concentrated value contrast and directional compositional cues; supporting areas are value-grouped to subordinate detail and strengthen the subject’s dominance.',
+                    keywords: ['focal emphasis', 'value grouping', 'contrast control', 'directional structure', 'subject dominance']
+                },
+                'visual-hierarchy': {
+                    title: 'Composition: Visual Hierarchy',
+                    description: 'Establishes primary, secondary, and tertiary reads using size, placement, and contrast; value grouping clarifies the order of emphasis for quick, legible reads.',
+                    keywords: ['visual hierarchy', 'read order', 'contrast cues', 'size/placement', 'value grouping']
+                },
+                'balance-weight': {
+                    title: 'Composition: Balance & Weight',
+                    description: 'Distributes tonal and shape masses to achieve equilibrium (or purposeful tension); manages visual heaviness with counterbalances and a stable center of gravity.',
+                    keywords: ['equilibrium', 'tonal masses', 'left–right weighting', 'center of gravity', 'counterbalance']
+                },
+                'unity-creation': {
+                    title: 'Composition: Unity Creation',
+                    description: 'Binds the composition through linking shapes, repeated tonal motifs, and shared envelopes that create cohesion across separate units.',
+                    keywords: ['unity', 'linking shapes', 'tonal continuity', 'repetition', 'cohesion']
+                },
+                'friedrich-atmospheric': {
+                    title: 'Caspar David Friedrich: Atmospheric Depth (AIC 50276)',
+                    description: 'Near forms read darkest and most distinct; successive mist layers lighten and soften toward the distance. Value compression and haze create deep recession.',
+                    keywords: ['aerial perspective', 'mist layers', 'value compression', 'distance haze', 'near silhouette']
+                },
+                'canaletto-spatial': {
+                    title: 'Canaletto: Architectural Planar Organization (AIC 113273)',
+                    description: 'Uses architectural elements (arches, walls, passages) to organize space into distinct zones and planes; tone separates foreground/middle/background through structural logic rather than atmospheric effects.',
+                    keywords: ['architectural planes', 'spatial zones', 'framing devices', 'geometric structure', 'planar separation']
+                },
+                'anonymous-french-form': {
+                    title: 'Form Modeling: Core Shadow & Reflected Light (Anonymous French)',
+                    description: 'Clear light-to-dark structure defines volume: highlight into halftone, into core shadow, with controlled reflected light and cast shadow for legibility.',
+                    keywords: ['core shadow', 'halftone', 'reflected light', 'terminator', 'cast shadow']
+                },
+                'monet-balance': {
+                    title: 'Claude Monet: Balance & Weight (Cliffs and Sea, Sainte-Adresse)',
+                    description: 'Distributes cliff mass against sea/sky mass with a stabilizing horizon anchor. Counterbalances prevent visual tipping; weight reads through tonal mass and placement.',
+                    keywords: ['balance & weight', 'mass distribution', 'left–right weighting', 'counterbalance', 'horizon anchor']
+                },
+                'rosenthal-form': {
+                    title: 'Toby E. Rosenthal: Volumetric Form Through Tonal Transitions',
+                    description: 'Rosenthal demonstrates sophisticated volumetric construction through systematic tonal architecture. The artist employs a methodical approach to form modeling where each tonal transition functions as a structural element in building three-dimensional mass. Most remarkably, Rosenthal achieves extraordinary surface definition through subtle variations within the half-tone range, allowing him to describe the character and texture of aged skin without resorting to linear definition of wrinkles or surface details.',
+                    keywords: ['form modeling', 'volumetric rendering', 'tonal transitions', 'three-dimensional illusion', 'sculptural quality', 'planar shifts', 'structural definition', 'anatomical understanding', 'spatial depth'],
+                    references: ['📄 rosenthal-form-modeling.md', '🎬 rosenthal-character-study-form-modeling.gif']
+                },
+                    title: 'Toby E. Rosenthal: Directional Light Modeling (MET 6498)',
+                    description: 'Light direction articulated by a clear sequence from highlight through halftone to core and cast shadow; shadow direction and edge quality convey time and environment.',
+                    keywords: ['directional light', 'highlight–halftone–core', 'cast shadow', 'time indication', 'edge quality']
+                }
+            };
+            
+            const data = artistData[artist];
+            if (!data) return;
+            
+            const keywordTags = data.keywords.map(k => `<span class="keyword">${k}</span>`).join('');
+            const referenceFiles = data.references ? `
+                <div class="detail-section">
+                    <h4>Reference Files</h4>
+                    <div class="detail-content">
+                        ${data.references.join('<br>')}
+                    </div>
+                </div>
+            ` : '';
+            
+            // Get the GIF path based on artist method
+            const gifPath = getGifPath(artist);
+            const imageDisplay = gifPath ? `
+                <div class="detail-image">
+                    <img src="${gifPath}" alt="${data.title}">
+                </div>
+            ` : `
+                <div class="detail-image">
+                    <div class="placeholder">
+                        Image not available
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('artist-detail-content').innerHTML = `
+                <div class="artist-detail-content">
+                    <div class="detail-text-content">
+                        <h4>${data.title}</h4>
+                        
+                        <div class="detail-section">
+                            <h4>Keywords</h4>
+                            <div class="keywords">
+                                ${keywordTags}
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Method</h4>
+                            <div class="detail-content">
+                                ${data.description}
+                            </div>
+                        </div>
+                        
+                        ${referenceFiles}
+                    </div>
+                    ${imageDisplay}
+                </div>
+            `;
+            
+            // Update selected state for artist options in the fourth column
+            document.querySelectorAll('.artist-option').forEach(el => el.classList.remove('selected'));
+            const artistOptions = document.querySelectorAll('.artist-option');
+            artistOptions.forEach(option => {
+                const onclickStr = option.getAttribute('onclick') || '';
+                if (onclickStr.includes(`'${artist}'`)) {
+                    option.classList.add('selected');
+                }
+            });
+
+            // Update artist work panel (fifth column)
+            const workPanel = document.querySelector('.artist-work-panel');
+            if (workPanel) {
+                const workGifPath = getGifPath(artist);
+                workPanel.innerHTML = `
+                    <h5>Artwork</h5>
+                    ${workGifPath ? `<img src="${workGifPath}" alt="${data.title}" style="max-width: 100%; max-height: 300px;">` : '<p>Image not available</p>'}
+                `;
+            }
+            
+            // Update URL
+            updateURL();
+        }
+
+        // Add CSS for empty state and keywords
+        const additionalCSS = `
+            .empty-state {
+                color: #6c757d;
+                font-style: italic;
+                text-align: center;
+                padding: 2rem;
+                background: #f8f9fa;
+                border-radius: 8px;
+                margin: 1rem 0;
+            }
+            
+            .keywords {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+            
+            .keyword {
+                background: #e3f2fd;
+                color: #1976d2;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                font-size: 0.8rem;
+            }
+            
+            .detail-image {
+                background: transparent;
+                padding: 0;
+                text-align: left;
+                color: #6c757d;
+                margin: 1rem 0;
+            }
+            
+            .artist-layout {
+                display: flex;
+                gap: 1rem;
+                margin: 1rem 0;
+                height: calc(100vh - 250px);
+            }
+
+            .artist-method-list {
+                flex: 0 0 200px;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                overflow: hidden;
+                overflow-y: auto;
+            }
+
+            .artist-options-panel {
+                flex: 0 0 250px;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                padding: 1rem;
+                overflow-y: auto;
+            }
+
+            .artist-detail-panel {
+                flex: 1;
+                background: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                padding: 1.5rem;
+                overflow-y: auto;
+                height: 100%;
+            }
+
+            .artist-work-panel {
+                flex: 0 0 400px;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                padding: 1rem;
+                overflow-y: auto;
+                text-align: center;
+            }
+            
+            .artist-method {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #e9ecef;
+                cursor: pointer;
+                background: #ffffff;
+                transition: background-color 0.2s;
+            }
+            
+            .artist-method:last-child {
+                border-bottom: none;
+            }
+            
+            .artist-method:hover {
+                background: #f8f9fa;
+            }
+            
+            .artist-method.selected {
+                background: #e3f2fd;
+                border-left: 3px solid #1976d2;
+            }
+            
+            .artist-name {
+                font-weight: 400;
+                color: #6c757d;
+                margin-bottom: 0.25rem;
+                font-size: 0.9rem;
+            }
+            
+            .method-description {
+                font-weight: 600;
+                color: #333;
+                font-size: 1rem;
+            }
+            
+            .artist-method.selected .artist-name {
+                color: #6c757d;
+            }
+            
+            .artist-option {
+                padding: 0.75rem;
+                border: 1px solid #e9ecef;
+                border-radius: 6px;
+                margin-bottom: 0.5rem;
+                cursor: pointer;
+                background: #ffffff;
+                transition: background-color 0.2s;
+            }
+
+            .artist-option:hover {
+                background: #f8f9fa;
+            }
+
+            .artist-option.selected {
+                background: #e3f2fd;
+                border-color: #1976d2;
+            }
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = additionalCSS;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

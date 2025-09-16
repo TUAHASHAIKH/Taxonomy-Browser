@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "accession_number": "JP1847",
+    "title": "Woman with Baby (detail)",
+    "artist": "Katsushika Hokusai, Japanese",
+    "date": "ca. 1830s",
+    "culture": "Japanese",
+    "medium": "Ink on paper",
+    "source_institution": "Private Collection",
+    "object_url": ""
+  },
+  "image_info": {
+    "image_id": "hokusai_woman_baby_1830s",
+    "primary_image_url": "hokusai_woman_baby_1830s.jpg"
+  },
+  "line_quality_properties": [
+    {
+      "concept": "RhythmicMarkWeight",
+      "displayName": "Rhythmic Mark Weight",
+      "keywords": [
+        "Hokusai", "rhythmic", "mark weight", "thick to thin", "breathing line", "energy", "movement"
+      ],
+      "analysis": "This exemplifies the 'Hokusai Principle' of rhythmic mark weight. Notice how the contour lines swell from thick to thin in a natural, breathing rhythm. This variation gives the forms incredible energy and life, making even static poses feel dynamic. The line weight changes follow the natural emphasis of the form - heavier where the form turns away from light, lighter on the illuminated edges.",
+      "drawing_tip": "Let your lines breathe by varying pressure as you draw. Think of each line as having a pulse that follows the form's energy.",
+      "highlight_area": [0.1, 0.1, 0.9, 0.9]
+    },
+    {
+      "concept": "GesturalConfidence",
+      "displayName": "Gestural Confidence",
+      "keywords": [
+        "gesture", "confidence", "fluid", "continuous", "decisive", "brush control"
+      ],
+      "analysis": "Hokusai's lines demonstrate complete confidence and control. Each mark is decisive and fluid, showing no hesitation or correction. This gestural confidence comes from years of practice and deep understanding of form, allowing the artist to capture complex shapes with seemingly effortless strokes.",
+      "drawing_tip": "Practice making confident, continuous lines. Don't stop and start - commit to each mark fully.",
+      "highlight_area": [0.2, 0.3, 0.8, 0.8]
+    }
+  ]
+}

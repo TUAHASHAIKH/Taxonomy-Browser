@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Drawing Taxonomy Browser Schema",
+  "description": "Hierarchical structure for drawing techniques, methods, and artist examples",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "lastUpdated": { "type": "string", "format": "date-time" },
+        "description": { "type": "string" },
+        "totalCategories": { "type": "integer" },
+        "totalMethods": { "type": "integer" },
+        "totalArtists": { "type": "integer" }
+      },
+      "required": ["version", "lastUpdated", "description"]
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Category"
+      }
+    }
+  },
+  "required": ["metadata", "categories"],
+  "definitions": {
+    "Category": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "order": { "type": "integer" },
+        "subcategories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Subcategory"
+          }
+        }
+      },
+      "required": ["id", "name", "subcategories"]
+    },
+    "Subcategory": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "order": { "type": "integer" },
+        "methodCount": { "type": "integer" },
+        "methods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Method"
+          }
+        }
+      },
+      "required": ["id", "name", "methods"]
+    },
+    "Method": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "technique": { "type": "string" },
+        "order": { "type": "integer" },
+        "status": { 
+          "type": "string", 
+          "enum": ["active", "development", "deprecated"] 
+        },
+        "artistCount": { "type": "integer" },
+        "artists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Artist"
+          }
+        },
+        "hasSubMethods": { "type": "boolean" },
+        "subMethods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Method"
+          }
+        }
+      },
+      "required": ["id", "name", "status"]
+    },
+    "Artist": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Media"
+          }
+        },
+        "sourceFile": { "type": "string" },
+        "order": { "type": "integer" },
+        "status": { 
+          "type": "string", 
+          "enum": ["complete", "partial", "placeholder"] 
+        }
+      },
+      "required": ["id", "name", "title", "description", "keywords"]
+    },
+    "Reference": {
+      "type": "object",
+      "properties": {
+        "type": { 
+          "type": "string", 
+          "enum": ["documentation", "image", "video", "gif", "pdf"] 
+        },
+        "filename": { "type": "string" },
+        "path": { "type": "string" },
+        "description": { "type": "string" },
+        "size": { "type": "string" },
+        "format": { "type": "string" }
+      },
+      "required": ["type", "filename", "path"]
+    },
+    "Media": {
+      "type": "object",
+      "properties": {
+        "type": { 
+          "type": "string", 
+          "enum": ["gif", "image", "video", "interactive"] 
+        },
+        "filename": { "type": "string" },
+        "path": { "type": "string" },
+        "alt": { "type": "string" },
+        "width": { "type": "integer" },
+        "height": { "type": "integer" },
+        "duration": { "type": "number" },
+        "description": { "type": "string" }
+      },
+      "required": ["type", "filename", "path"]
+    }
+  }
+}

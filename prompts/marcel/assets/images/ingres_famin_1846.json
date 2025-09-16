@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "accession_number": "1975.1.641",
+    "title": "Portrait of Madame Famin",
+    "artist": "Jean-Auguste-Dominique Ingres, French",
+    "date": "1846",
+    "culture": "French",
+    "medium": "Graphite on paper",
+    "source_institution": "The Metropolitan Museum of Art",
+    "object_url": "https://www.metmuseum.org/art/collection/search/337543"
+  },
+  "image_info": {
+    "image_id": "ingres_famin_1846",
+    "primary_image_url": "ingres_famin_1846.jpg"
+  },
+  "line_quality_properties": [
+    {
+      "concept": "SculpturalMarkWeight",
+      "displayName": "Sculptural Mark Weight",
+      "keywords": [
+        "Ingres", "sculptural", "mark weight", "volume", "form", "light", "shadow", "precise"
+      ],
+      "analysis": "This demonstrates the 'Ingres Principle' of sculptural mark weight. Ingres uses controlled variation in line weight to create a sense of three-dimensional volume. The lines become heavier in shadow areas and lighter where forms catch the light, effectively 'carving' the form from the paper. This technique transforms flat contours into sculptural volumes.",
+      "drawing_tip": "Vary your line weight based on light and shadow. Heavier lines in shadows, lighter lines where light hits the form.",
+      "highlight_area": [0.15, 0.1, 0.85, 0.9]
+    },
+    {
+      "concept": "PreciseObservation",
+      "displayName": "Precise Observation",
+      "keywords": [
+        "precision", "observation", "accuracy", "detail", "refinement", "classical"
+      ],
+      "analysis": "Ingres demonstrates extraordinary precision in his observation and execution. Every line is placed with purpose and accuracy, showing deep understanding of form and proportion. This level of precision comes from careful study and methodical approach to drawing.",
+      "drawing_tip": "Take time to observe carefully before making each mark. Precision comes from seeing clearly first.",
+      "highlight_area": [0.3, 0.2, 0.7, 0.6]
+    }
+  ]
+}

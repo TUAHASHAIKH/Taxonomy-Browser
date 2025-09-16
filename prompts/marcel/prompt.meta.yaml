@@ -1,0 +1,36 @@
+promptId: marcel-ai-drawing-tutor
+version: 2.0.0
+status: draft
+owner: Art Sensei Team
+
+# Target models
+modelTargets:
+  - gpt-4o
+  - gpt-4o-mini
+  - claude-3.5-sonnet
+
+# Classification
+tags:
+  - drawing_feedback
+  - mark_analysis
+  - figure_work
+  - beginner_friendly
+
+# Risk and safety
+riskProfile:
+  level: low
+  notes: "Content is educational and clinical. Risk is low when professional framing is maintained."
+safetyProfile:
+  level: medium
+  notes: "Handles artistic nudity. Requires tacit consent and adherence to safety templates to mitigate risk."
+
+# Changelog
+changelog:
+  - version: 2.0.0
+    date: "2025-08-23"
+    author: "Art Sensei Team"
+    summary: "Rebuilt analytical engine with Drawing Mark Taxonomy, added professional figure work analysis, implemented tacit consent, and modularized prompt structure."
+  - version: 1.0.0
+    date: "2024-01-01"
+    author: "Art Sensei Team"
+    summary: "Initial Marcel prompt with Affinity & Opportunity model."
